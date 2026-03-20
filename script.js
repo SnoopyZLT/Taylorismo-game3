@@ -1,3 +1,7 @@
+// =====================
+// DADOS
+// =====================
+
 let jogador = {
   eficiencia: 50,
   saude: 80,
@@ -8,8 +12,13 @@ let jogador = {
   empresa: false,
   sucessoFabrica: 0,
   cargo: "Operário",
-  erros: 0
+  erros: 0,
+  progressoPromo: 0
 };
+
+// =====================
+// HUD
+// =====================
 
 function atualizarStatus() {
   money.innerText = jogador.dinheiro;
@@ -24,6 +33,9 @@ function atualizarStatus() {
   satisfacaoBar.style.width = jogador.satisfacao + "%";
   satisfacaoBar.innerText = jogador.satisfacao + "%";
 
+  promoBar.style.width = jogador.progressoPromo + "%";
+  promoBar.innerText = jogador.progressoPromo + "%";
+
   if (jogador.empresa) {
     barraEmpresa.style.display = "block";
     empresaBar.style.width = jogador.sucessoFabrica + "%";
@@ -31,79 +43,201 @@ function atualizarStatus() {
   }
 }
 
+// =====================
+// HISTÓRIA
+// =====================
+
 function addHistoria(txt) {
   historia.innerHTML = `<div>${txt}</div>` + historia.innerHTML;
 }
 
-function mostrarOpcoes(lista) {
-  opcoes.innerHTML = "";
-  lista.forEach(op => {
-    let b = document.createElement("button");
-    b.innerText = op.texto;
-    b.onclick = op.acao;
-    opcoes.appendChild(b);
+// =====================
+// EVENTOS AVANÇADOS
+// =====================
+
+function eventoRandom() {
+
+  let eventos = [
+
+    // GREVE
+    () => mostrarPopup(
+      "✊ Greve Geral",
+      "Funcionários pararam tudo!",
+      [
+        {
+          texto: "Negociar",
+          efeito: "+Satisfação -Dinheiro",
+          acao: () => {
+            jogador.satisfacao += 15;
+            jogador.dinheiro -= 20;
+            addHistoria("Você negociou com trabalhadores.");
+            proximoDia();
+          }
+        },
+        {
+          texto: "Reprimir",
+          efeito: "+Reputação -Satisfação",
+          acao: () => {
+            jogador.reputacao += 10;
+            jogador.satisfacao -= 15;
+            addHistoria("Você reprimiu a greve.");
+            proximoDia();
+          }
+        }
+      ]
+    ),
+
+    // FALÊNCIA
+    () => mostrarPopup(
+      "💸 Risco de falência",
+      "A fábrica está perdendo dinheiro.",
+      [
+        {
+          texto: "Investir pesado",
+          efeito: "+Fábrica -Dinheiro",
+          acao: () => {
+            jogador.dinheiro -= 50;
+            jogador.sucessoFabrica += 15;
+            addHistoria("Você investiu na recuperação.");
+            proximoDia();
+          }
+        },
+        {
+          texto: "Cortar custos",
+          efeito: "+Dinheiro -Satisfação",
+          acao: () => {
+            jogador.dinheiro += 20;
+            jogador.satisfacao -= 10;
+            addHistoria("Você cortou custos.");
+            proximoDia();
+          }
+        }
+      ]
+    )
+
+  ];
+
+  let evento = eventos[Math.floor(Math.random() * eventos.length)];
+  evento();
+}
+
+// =====================
+// POPUP
+// =====================
+
+function mostrarPopup(titulo, texto, opcoes) {
+  popup.classList.remove("hidden");
+  popupTitulo.innerText = titulo;
+  popupTexto.innerText = texto;
+
+  popupOpcoes.innerHTML = "";
+
+  opcoes.forEach(op => {
+    let btn = document.createElement("button");
+    btn.innerText = op.texto + " (" + op.efeito + ")";
+    btn.onclick = () => {
+      op.acao();
+      popup.classList.add("hidden");
+      atualizarStatus();
+    };
+    popupOpcoes.appendChild(btn);
   });
 }
 
-function verificarFim() {
-  if (jogador.dia > 200) {
-    alert("⌛ Tempo acabou! Você falhou.");
-    location.reload();
-  }
-
-  if (jogador.erros >= 5 || jogador.reputacao <= 0) {
-    alert("💀 Você foi demitido.");
-    location.reload();
-  }
-
-  if (jogador.empresa && jogador.sucessoFabrica >= 100) {
-    alert("🏆 Sua fábrica virou sucesso!");
-    location.reload();
-  }
-}
+// =====================
+// PROMOÇÃO (DIFÍCIL)
+// =====================
 
 function progresso() {
-  if (jogador.eficiencia > 80 && jogador.cargo === "Operário") {
-    jogador.cargo = "Supervisor";
-    addHistoria("Promoção: Supervisor");
+
+  jogador.progressoPromo += Math.floor(jogador.eficiencia / 20);
+
+  if (jogador.progressoPromo >= 100) {
+
+    if (jogador.cargo === "Operário") {
+      jogador.cargo = "Supervisor";
+      addHistoria("Promoção: Supervisor");
+    }
+
+    else if (jogador.cargo === "Supervisor") {
+      jogador.cargo = "Gerente";
+      addHistoria("Promoção: Gerente");
+    }
+
+    jogador.progressoPromo = 0;
   }
 
-  if (jogador.eficiencia > 110 && jogador.cargo === "Supervisor") {
-    jogador.cargo = "Gerente";
-    addHistoria("Promoção: Gerente");
-  }
-
+  // receber fábrica
   if (jogador.cargo === "Gerente" && !jogador.empresa) {
     jogador.empresa = true;
     addHistoria("Você recebeu uma fábrica!");
   }
 }
 
+// =====================
+// FÁBRICA (NOVAS OPÇÕES)
+// =====================
+
 function melhoriasFabrica() {
   if (!jogador.empresa) return;
 
   mostrarOpcoes([
     {
-      texto: "Investir (50)",
+      texto: "Investir 50",
       acao: () => {
         if (jogador.dinheiro >= 50) {
           jogador.dinheiro -= 50;
           jogador.sucessoFabrica += 10;
-          addHistoria("Você investiu na fábrica.");
         }
         proximoDia();
       }
     },
     {
-      texto: "Treinar funcionários",
+      texto: "Automatizar 100",
       acao: () => {
-        jogador.sucessoFabrica += 5;
-        addHistoria("Treinamento realizado.");
+        if (jogador.dinheiro >= 100) {
+          jogador.dinheiro -= 100;
+          jogador.sucessoFabrica += 20;
+          jogador.satisfacao -= 5;
+        }
+        proximoDia();
+      }
+    },
+    {
+      texto: "Treinar equipe",
+      acao: () => {
+        jogador.sucessoFabrica += 8;
         proximoDia();
       }
     }
   ]);
 }
+
+// =====================
+// FIM
+// =====================
+
+function verificarFim() {
+
+  if (jogador.dia > 200) {
+    alert("⌛ Tempo acabou!");
+    location.reload();
+  }
+
+  if (jogador.erros >= 5) {
+    alert("💀 Demitido!");
+    location.reload();
+  }
+
+  if (jogador.sucessoFabrica >= 100) {
+    alert("🏆 Fábrica de sucesso!");
+    location.reload();
+  }
+}
+
+// =====================
+// TURNO
+// =====================
 
 function turno() {
   atualizarStatus();
@@ -115,7 +249,7 @@ function turno() {
       acao: () => {
         jogador.eficiencia += 10;
         jogador.dinheiro += 20;
-        proximoDia();
+        eventoRandom();
       }
     },
     {
@@ -129,7 +263,7 @@ function turno() {
       texto: "Arriscar",
       acao: () => {
         jogador.reputacao += 5;
-        proximoDia();
+        eventoRandom();
       }
     },
     {
@@ -138,6 +272,10 @@ function turno() {
     }
   ]);
 }
+
+// =====================
+// FLUXO
+// =====================
 
 function proximoDia() {
   verificarFim();
