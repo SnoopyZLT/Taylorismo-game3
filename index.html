@@ -4,68 +4,58 @@
   <meta charset="UTF-8">
   <title>Simulador Taylorista</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
 <!-- TOPO -->
 <div class="topo">
-  <div class="menu">☰</div>
-  <div class="logo">🏭 Simulador</div>
-  <div class="dinheiro">💰 <span id="money">0</span></div>
+  <div>☰</div>
+  <div>🏭 Simulador</div>
+  <div>💰 <span id="money">0</span></div>
 </div>
 
 <!-- PERFIL -->
 <div class="perfil">
-  <div class="nome">Operário Taylorista</div>
-  <div class="sub">Fábrica • <span id="cargo">Operário</span></div>
+  <div class="nome">Operário</div>
+  <div class="sub">Cargo: <span id="cargo">Operário</span></div>
 </div>
 
 <!-- HISTÓRIA -->
 <div id="historia"></div>
 
 <!-- BOTÃO CENTRAL -->
-<div class="botao-centro" onclick="proximoDia()">
-  +
-</div>
+<div class="botao-centro" onclick="proximoDia()">+</div>
 
 <!-- BARRAS -->
 <div class="barras">
 
-  <div>
-    ⚙️ Eficiência
-    <div class="barra">
-      <div id="eficienciaBar" class="progresso">50%</div>
-    </div>
+  <div class="blocoBarra">
+    Eficiência
+    <div class="barra"><div id="eficienciaBar" class="progresso">50%</div></div>
   </div>
 
-  <div>
-    ❤️ Saúde
-    <div class="barra">
-      <div id="saudeBar" class="progresso">80%</div>
-    </div>
+  <div class="blocoBarra">
+    Saúde
+    <div class="barra"><div id="saudeBar" class="progresso">80%</div></div>
   </div>
 
-  <div>
-    😐 Satisfação
-    <div class="barra">
-      <div id="satisfacaoBar" class="progresso">60%</div>
-    </div>
+  <div class="blocoBarra">
+    Satisfação
+    <div class="barra"><div id="satisfacaoBar" class="progresso">60%</div></div>
   </div>
 
-  <!-- BARRA DA EMPRESA -->
-  <div id="barraEmpresa" style="display:none">
-    🏢 Sucesso da Fábrica
-    <div class="barra">
-      <div id="empresaBar" class="progresso">0%</div>
-    </div>
+  <div id="barraEmpresa" class="blocoBarra" style="display:none">
+    Sucesso da Fábrica
+    <div class="barra"><div id="empresaBar" class="progresso">0%</div></div>
   </div>
 
 </div>
 
 <!-- OPÇÕES -->
-<div id="opcoes" class="opcoes"></div>
+<div id="opcoes"></div>
 
-<!-- POPUP DE EVENTOS -->
+<!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-content">
     <h2 id="popupTitulo"></h2>
@@ -75,6 +65,5 @@
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
