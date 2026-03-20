@@ -1,99 +1,110 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: #f2f2f2;
+  background: #f0f4ff;
+  max-width: 500px;
+  margin: auto;
 }
 
 /* TOPO */
 .topo {
-  background: #d32f2f;
+  background: #4169E1;
   color: white;
   padding: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
 }
 
 /* PERFIL */
 .perfil {
-  background: #e0e0e0;
+  background: #dbe4ff;
   padding: 10px;
-}
-
-.nome {
-  font-weight: bold;
-}
-
-.sub {
-  font-size: 14px;
-  color: #555;
 }
 
 /* HISTÓRIA */
 #historia {
   background: white;
-  height: 300px;
+  height: 250px;
   overflow-y: auto;
   padding: 10px;
   font-size: 14px;
 }
 
-.logItem {
-  margin-bottom: 5px;
-}
-
-/* BOTÃO CENTRAL */
+/* BOTÃO */
 .botao-centro {
   position: fixed;
-  bottom: 90px;
+  bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: green;
+  background: #4169E1;
   color: white;
   width: 70px;
   height: 70px;
   border-radius: 50%;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   font-size: 30px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 /* BARRAS */
 .barras {
   padding: 10px;
-  background: #ddd;
+}
+
+.blocoBarra {
+  margin-bottom: 10px;
 }
 
 .barra {
   width: 100%;
-  height: 10px;
-  background: #bbb;
-  margin: 5px 0;
+  height: 15px;
+  background: #ccc;
+  border: 2px solid black;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.barra::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    transparent,
+    transparent 10%,
+    rgba(0,0,0,0.1) 10%,
+    rgba(0,0,0,0.1) 11%
+  );
 }
 
 .progresso {
   height: 100%;
-  background: green;
+  background: #4169E1;
+  text-align: center;
+  font-size: 12px;
+  color: white;
 }
 
 /* OPÇÕES */
-.opcoes {
+#opcoes {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: #1976d2;
+  background: #4169E1;
   display: flex;
+  flex-wrap: wrap;
 }
 
-.opcoes button {
-  flex: 1;
-  padding: 10px;
+#opcoes button {
+  width: 50%;
+  padding: 15px;
+  border: none;
   color: white;
   background: transparent;
-  border: none;
+  font-size: 14px;
 }
 
 /* POPUP */
@@ -118,4 +129,4 @@ body {
 
 .hidden {
   display: none;
-  }
+}
