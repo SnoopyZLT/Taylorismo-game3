@@ -14,13 +14,13 @@
   <div class="dinheiro">💰 <span id="money">0</span></div>
 </div>
 
-<!-- INFO JOGADOR -->
+<!-- PERFIL -->
 <div class="perfil">
   <div class="nome">Operário Taylorista</div>
-  <div class="sub">Fábrica • <span id="cargo"></span></div>
+  <div class="sub">Fábrica • <span id="cargo">Operário</span></div>
 </div>
 
-<!-- HISTÓRIA (CENTRO PRINCIPAL) -->
+<!-- HISTÓRIA -->
 <div id="historia"></div>
 
 <!-- BOTÃO CENTRAL -->
@@ -30,15 +30,42 @@
 
 <!-- BARRAS -->
 <div class="barras">
-  <div>⚙️ Eficiência <div class="barra"><div id="eficienciaBar" class="progresso"></div></div></div>
-  <div>❤️ Saúde <div class="barra"><div id="saudeBar" class="progresso"></div></div></div>
-  <div>😐 Satisfação <div class="barra"><div id="satisfacaoBar" class="progresso"></div></div></div>
+
+  <div>
+    ⚙️ Eficiência
+    <div class="barra">
+      <div id="eficienciaBar" class="progresso">50%</div>
+    </div>
+  </div>
+
+  <div>
+    ❤️ Saúde
+    <div class="barra">
+      <div id="saudeBar" class="progresso">80%</div>
+    </div>
+  </div>
+
+  <div>
+    😐 Satisfação
+    <div class="barra">
+      <div id="satisfacaoBar" class="progresso">60%</div>
+    </div>
+  </div>
+
+  <!-- BARRA DA EMPRESA -->
+  <div id="barraEmpresa" style="display:none">
+    🏢 Sucesso da Fábrica
+    <div class="barra">
+      <div id="empresaBar" class="progresso">0%</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- OPÇÕES -->
 <div id="opcoes" class="opcoes"></div>
 
-<!-- POPUP -->
+<!-- POPUP DE EVENTOS -->
 <div id="popup" class="popup hidden">
   <div class="popup-content">
     <h2 id="popupTitulo"></h2>
@@ -50,4 +77,4 @@
 <script src="script.js"></script>
 
 </body>
-  </html>
+</html>
