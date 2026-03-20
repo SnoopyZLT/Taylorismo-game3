@@ -1,5 +1,5 @@
 // =====================
-// DADOS DO JOGADOR
+// DADOS
 // =====================
 
 let jogador = {
@@ -12,12 +12,14 @@ let jogador = {
   reputacao: 50,
   empresa: false,
   cargo: "Operário",
+  sucessoFabrica: 0,
   historico: [],
-  erros: 0
+  erros: 0,
+  recebeuFabrica: false
 };
 
 // =====================
-// HUD (LAYOUT NOVO)
+// HUD
 // =====================
 
 function atualizarStatus() {
@@ -27,24 +29,35 @@ function atualizarStatus() {
   document.getElementById("eficienciaBar").style.width = jogador.eficiencia + "%";
   document.getElementById("saudeBar").style.width = jogador.saude + "%";
   document.getElementById("satisfacaoBar").style.width = jogador.satisfacao + "%";
+
+  // MOSTRAR %
+  document.getElementById("eficienciaBar").innerText = jogador.eficiencia + "%";
+  document.getElementById("saudeBar").innerText = jogador.saude + "%";
+  document.getElementById("satisfacaoBar").innerText = jogador.satisfacao + "%";
+
+  // BARRA DA EMPRESA
+  if (jogador.empresa) {
+    document.getElementById("barraEmpresa").style.display = "block";
+    document.getElementById("empresaBar").style.width = jogador.sucessoFabrica + "%";
+    document.getElementById("empresaBar").innerText = jogador.sucessoFabrica + "%";
+  }
 }
 
 // =====================
-// HISTÓRIA (FEED)
+// HISTÓRIA
 // =====================
 
 function addHistoria(txt) {
   jogador.historico.unshift(txt);
 
   document.getElementById("historia").innerHTML =
-    jogador.historico
-      .slice(0, 30)
+    jogador.historico.slice(0, 30)
       .map(t => `<div class="logItem">${t}</div>`)
       .join("");
 }
 
 // =====================
-// POPUP (EVENTOS)
+// POPUP
 // =====================
 
 function mostrarPopup(titulo, texto, opcoes) {
@@ -71,23 +84,22 @@ function mostrarPopup(titulo, texto, opcoes) {
 }
 
 // =====================
-// EVENTOS VARIADOS
+// EVENTOS
 // =====================
 
 function eventoRandom() {
+
   let eventos = [
 
     // Máquina
-    () => mostrarPopup(
-      "⚙️ Máquina quebrou",
-      "Uma máquina parou de funcionar.",
+    () => mostrarPopup("⚙️ Máquina quebrou", "Uma máquina parou.",
       [
         {
           texto: "Consertar",
-          efeito: "+Eficiência -Saúde",
+          efeito: "+Eficiência +Fábrica",
           acao: () => {
             jogador.eficiencia += 10;
-            jogador.saude -= 5;
+            if (jogador.empresa) jogador.sucessoFabrica += 5;
             addHistoria("Você consertou a máquina.");
             proximoDia();
           }
@@ -106,53 +118,24 @@ function eventoRandom() {
     ),
 
     // Revolta
-    () => mostrarPopup(
-      "✊ Revolta",
-      "Funcionários estão revoltados.",
+    () => mostrarPopup("✊ Revolta", "Funcionários revoltados.",
       [
         {
           texto: "Apoiar",
-          efeito: "+Satisfação -Reputação",
+          efeito: "+Satisfação",
           acao: () => {
             jogador.satisfacao += 10;
-            jogador.reputacao -= 5;
+            if (jogador.empresa) jogador.sucessoFabrica += 3;
             addHistoria("Você apoiou a revolta.");
             proximoDia();
           }
         },
         {
           texto: "Reprimir",
-          efeito: "+Reputação -Satisfação",
-          acao: () => {
-            jogador.reputacao += 10;
-            jogador.satisfacao -= 10;
-            addHistoria("Você reprimiu a revolta.");
-            proximoDia();
-          }
-        }
-      ]
-    ),
-
-    // Oportunidade
-    () => mostrarPopup(
-      "💼 Oportunidade",
-      "Chance de crescer apareceu.",
-      [
-        {
-          texto: "Aproveitar",
           efeito: "+Reputação",
           acao: () => {
             jogador.reputacao += 10;
-            jogador.eficiencia += 5;
-            addHistoria("Você aproveitou a oportunidade.");
-            proximoDia();
-          }
-        },
-        {
-          texto: "Ignorar",
-          efeito: "Nada",
-          acao: () => {
-            addHistoria("Você ignorou a oportunidade.");
+            addHistoria("Você reprimiu a revolta.");
             proximoDia();
           }
         }
@@ -171,22 +154,35 @@ function eventoRandom() {
 
 function progresso() {
 
-  // Promoção simples
   if (jogador.eficiencia > 80 && jogador.cargo === "Operário") {
     jogador.cargo = "Supervisor";
-    addHistoria("🎉 Você virou Supervisor!");
+    addHistoria("🎉 Virou Supervisor!");
   }
 
   if (jogador.eficiencia > 110 && jogador.cargo === "Supervisor") {
     jogador.cargo = "Gerente";
-    addHistoria("🚀 Você virou Gerente!");
+    addHistoria("🚀 Virou Gerente!");
   }
 
-  // Criar empresa
-  if (jogador.dinheiro >= 300 && !jogador.empresa) {
-    jogador.empresa = true;
-    jogador.cargo = "Empresário";
-    addHistoria("🏢 Você criou sua própria fábrica!");
+  // EVENTO DE RECEBER FÁBRICA
+  if (jogador.cargo === "Gerente" && !jogador.recebeuFabrica) {
+    jogador.recebeuFabrica = true;
+
+    mostrarPopup(
+      "🏢 Nova oportunidade",
+      "Você recebeu uma fábrica para gerenciar!",
+      [
+        {
+          texto: "Aceitar",
+          efeito: "Começar empresa",
+          acao: () => {
+            jogador.empresa = true;
+            addHistoria("Você agora controla uma fábrica!");
+            proximoDia();
+          }
+        }
+      ]
+    );
   }
 }
 
@@ -196,17 +192,25 @@ function progresso() {
 
 function verificarFim() {
 
+  // TEMPO ESGOTADO
+  if (jogador.dia > 365) {
+    mostrarCena("⌛ Tempo acabou! Você falhou.", [
+      { texto: "Recomeçar", acao: () => location.reload() }
+    ]);
+    return true;
+  }
+
   // DERROTA
   if (jogador.reputacao <= 0 || jogador.erros >= 5) {
-    mostrarCena("💀 Você foi demitido. Final ruim.", [
+    mostrarCena("💀 Você foi demitido.", [
       { texto: "Recomeçar", acao: () => location.reload() }
     ]);
     return true;
   }
 
   // VITÓRIA
-  if (jogador.empresa && jogador.dinheiro >= 500) {
-    mostrarCena("🏆 Sua fábrica virou um sucesso! Final bom.", [
+  if (jogador.empresa && jogador.sucessoFabrica >= 100) {
+    mostrarCena("🏆 Sua fábrica virou um sucesso!", [
       { texto: "Recomeçar", acao: () => location.reload() }
     ]);
     return true;
@@ -224,7 +228,7 @@ function turnoManha() {
   addHistoria(`🌅 Dia ${jogador.dia} - Manhã`);
 
   mostrarOpcoes([
-    { texto: "Trabalhar", acao: () => { jogador.eficiencia+=10; jogador.saude-=5; turnoTarde(); }},
+    { texto: "Trabalhar", acao: () => { jogador.eficiencia+=10; turnoTarde(); }},
     { texto: "Estudar", acao: () => { jogador.eficiencia+=5; turnoTarde(); }},
     { texto: "Descansar", acao: () => { jogador.saude+=5; turnoTarde(); }},
     { texto: "Reclamar", acao: () => { jogador.satisfacao+=10; turnoTarde(); }}
@@ -236,10 +240,10 @@ function turnoTarde() {
   addHistoria(`🌇 Dia ${jogador.dia} - Tarde`);
 
   mostrarOpcoes([
-    { texto: "Trabalhar mais", acao: () => { jogador.dinheiro+=20; eventoRandom(); }},
+    { texto: "Produzir", acao: () => { jogador.dinheiro+=20; eventoRandom(); }},
     { texto: "Descansar", acao: () => { jogador.saude+=10; eventoRandom(); }},
     { texto: "Arriscar", acao: () => { jogador.reputacao+=5; eventoRandom(); }},
-    { texto: "Ignorar tudo", acao: () => { jogador.erros++; eventoRandom(); }}
+    { texto: "Ignorar", acao: () => { jogador.erros++; eventoRandom(); }}
   ]);
 }
 
@@ -257,10 +261,24 @@ function proximoDia() {
 }
 
 // =====================
-// UI (BOTÕES)
+// UI
 // =====================
 
 function mostrarOpcoes(opcoes) {
+  let div = document.getElementById("opcoes");
+  div.innerHTML = "";
+
+  opcoes.forEach(op => {
+    let btn = document.createElement("button");
+    btn.innerText = op.texto;
+    btn.onclick = op.acao;
+    div.appendChild(btn);
+  });
+}
+
+function mostrarCena(texto, opcoes) {
+  document.getElementById("historia").innerHTML = `<div class="logItem">${texto}</div>`;
+
   let div = document.getElementById("opcoes");
   div.innerHTML = "";
 
@@ -278,7 +296,7 @@ function mostrarOpcoes(opcoes) {
 
 function inicio() {
   atualizarStatus();
-  addHistoria("🏭 Você começou sua vida na fábrica.");
+  addHistoria("🏭 Você começou sua jornada.");
   turnoManha();
 }
 
