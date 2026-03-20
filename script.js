@@ -1,3 +1,7 @@
+// =====================
+// DADOS DO JOGADOR
+// =====================
+
 let jogador = {
   eficiencia: 50,
   saude: 80,
@@ -7,43 +11,41 @@ let jogador = {
   turno: "manha",
   reputacao: 50,
   empresa: false,
+  cargo: "Operário",
   historico: [],
   erros: 0
 };
 
-//////////////////////
-// HUD
-//////////////////////
-
-function barra(v) {
-  return `<div class="barra"><div class="progresso" style="width:${v}%"></div></div>`;
-}
+// =====================
+// HUD (LAYOUT NOVO)
+// =====================
 
 function atualizarStatus() {
   document.getElementById("money").innerText = jogador.dinheiro;
+  document.getElementById("cargo").innerText = jogador.cargo;
 
-  document.getElementById("status").innerHTML = `
-    📅 Dia ${jogador.dia} (${jogador.turno})<br>
-    ⭐ Reputação: ${jogador.reputacao}
-    ⚙️ ${barra(jogador.eficiencia)}
-    ❤️ ${barra(jogador.saude)}
-    😐 ${barra(jogador.satisfacao)}
-  `;
+  document.getElementById("eficienciaBar").style.width = jogador.eficiencia + "%";
+  document.getElementById("saudeBar").style.width = jogador.saude + "%";
+  document.getElementById("satisfacaoBar").style.width = jogador.satisfacao + "%";
 }
 
-//////////////////////
-// HISTÓRIA
-//////////////////////
+// =====================
+// HISTÓRIA (FEED)
+// =====================
 
 function addHistoria(txt) {
   jogador.historico.unshift(txt);
+
   document.getElementById("historia").innerHTML =
-    jogador.historico.slice(0, 25).map(t => `<div class="logItem">${t}</div>`).join("");
+    jogador.historico
+      .slice(0, 30)
+      .map(t => `<div class="logItem">${t}</div>`)
+      .join("");
 }
 
-//////////////////////
-// POPUP
-//////////////////////
+// =====================
+// POPUP (EVENTOS)
+// =====================
 
 function mostrarPopup(titulo, texto, opcoes) {
   document.getElementById("popup").classList.remove("hidden");
@@ -57,29 +59,31 @@ function mostrarPopup(titulo, texto, opcoes) {
   opcoes.forEach(op => {
     let btn = document.createElement("button");
     btn.innerText = `${op.texto} (${op.efeito})`;
+
     btn.onclick = () => {
       op.acao();
       document.getElementById("popup").classList.add("hidden");
       atualizarStatus();
     };
+
     div.appendChild(btn);
   });
 }
 
-//////////////////////
-// EVENTOS AVANÇADOS
-//////////////////////
+// =====================
+// EVENTOS VARIADOS
+// =====================
 
 function eventoRandom() {
   let eventos = [
 
-    // Máquina quebrada
+    // Máquina
     () => mostrarPopup(
       "⚙️ Máquina quebrou",
       "Uma máquina parou de funcionar.",
       [
         {
-          texto: "Consertar rápido",
+          texto: "Consertar",
           efeito: "+Eficiência -Saúde",
           acao: () => {
             jogador.eficiencia += 10;
@@ -103,8 +107,8 @@ function eventoRandom() {
 
     // Revolta
     () => mostrarPopup(
-      "✊ Revolta de trabalhadores",
-      "Os funcionários estão revoltados.",
+      "✊ Revolta",
+      "Funcionários estão revoltados.",
       [
         {
           texto: "Apoiar",
@@ -132,7 +136,7 @@ function eventoRandom() {
     // Oportunidade
     () => mostrarPopup(
       "💼 Oportunidade",
-      "Você pode crescer na empresa.",
+      "Chance de crescer apareceu.",
       [
         {
           texto: "Aproveitar",
@@ -145,7 +149,7 @@ function eventoRandom() {
           }
         },
         {
-          texto: "Recusar",
+          texto: "Ignorar",
           efeito: "Nada",
           acao: () => {
             addHistoria("Você ignorou a oportunidade.");
@@ -154,44 +158,55 @@ function eventoRandom() {
         }
       ]
     )
+
   ];
 
   let evento = eventos[Math.floor(Math.random() * eventos.length)];
   evento();
 }
 
-//////////////////////
-// PROMOÇÃO + EMPRESA
-//////////////////////
+// =====================
+// PROGRESSO
+// =====================
 
 function progresso() {
-  if (jogador.eficiencia > 80 && !jogador.empresa) {
-    jogador.reputacao += 5;
+
+  // Promoção simples
+  if (jogador.eficiencia > 80 && jogador.cargo === "Operário") {
+    jogador.cargo = "Supervisor";
+    addHistoria("🎉 Você virou Supervisor!");
   }
 
+  if (jogador.eficiencia > 110 && jogador.cargo === "Supervisor") {
+    jogador.cargo = "Gerente";
+    addHistoria("🚀 Você virou Gerente!");
+  }
+
+  // Criar empresa
   if (jogador.dinheiro >= 300 && !jogador.empresa) {
     jogador.empresa = true;
+    jogador.cargo = "Empresário";
     addHistoria("🏢 Você criou sua própria fábrica!");
   }
 }
 
-//////////////////////
+// =====================
 // FINAIS
-//////////////////////
+// =====================
 
 function verificarFim() {
 
-  // FINAL RUIM
+  // DERROTA
   if (jogador.reputacao <= 0 || jogador.erros >= 5) {
-    mostrarCena("💀 FINAL RUIM: Você foi demitido por incompetência.", [
+    mostrarCena("💀 Você foi demitido. Final ruim.", [
       { texto: "Recomeçar", acao: () => location.reload() }
     ]);
     return true;
   }
 
-  // FINAL BOM
+  // VITÓRIA
   if (jogador.empresa && jogador.dinheiro >= 500) {
-    mostrarCena("🏆 FINAL BOM: Sua fábrica virou um sucesso!", [
+    mostrarCena("🏆 Sua fábrica virou um sucesso! Final bom.", [
       { texto: "Recomeçar", acao: () => location.reload() }
     ]);
     return true;
@@ -200,19 +215,19 @@ function verificarFim() {
   return false;
 }
 
-//////////////////////
+// =====================
 // TURNOS
-//////////////////////
+// =====================
 
 function turnoManha() {
   atualizarStatus();
   addHistoria(`🌅 Dia ${jogador.dia} - Manhã`);
 
-  mostrarCena("O que fazer?", [
-    { texto: "Trabalhar", acao: () => { jogador.eficiencia+=10; jogador.saude-=5; proximoTurno(); }},
-    { texto: "Estudar", acao: () => { jogador.eficiencia+=5; proximoTurno(); }},
-    { texto: "Descansar", acao: () => { jogador.saude+=5; proximoTurno(); }},
-    { texto: "Reclamar", acao: () => { jogador.satisfacao+=10; proximoTurno(); }}
+  mostrarOpcoes([
+    { texto: "Trabalhar", acao: () => { jogador.eficiencia+=10; jogador.saude-=5; turnoTarde(); }},
+    { texto: "Estudar", acao: () => { jogador.eficiencia+=5; turnoTarde(); }},
+    { texto: "Descansar", acao: () => { jogador.saude+=5; turnoTarde(); }},
+    { texto: "Reclamar", acao: () => { jogador.satisfacao+=10; turnoTarde(); }}
   ]);
 }
 
@@ -220,23 +235,17 @@ function turnoTarde() {
   atualizarStatus();
   addHistoria(`🌇 Dia ${jogador.dia} - Tarde`);
 
-  mostrarCena("Turno da tarde", [
+  mostrarOpcoes([
     { texto: "Trabalhar mais", acao: () => { jogador.dinheiro+=20; eventoRandom(); }},
     { texto: "Descansar", acao: () => { jogador.saude+=10; eventoRandom(); }},
-    { texto: "Arriscar decisão", acao: () => { jogador.reputacao+=5; eventoRandom(); }},
+    { texto: "Arriscar", acao: () => { jogador.reputacao+=5; eventoRandom(); }},
     { texto: "Ignorar tudo", acao: () => { jogador.erros++; eventoRandom(); }}
   ]);
 }
 
-//////////////////////
+// =====================
 // FLUXO
-//////////////////////
-
-function proximoTurno() {
-  jogador.turno = "tarde";
-  progresso();
-  turnoTarde();
-}
+// =====================
 
 function proximoDia() {
   if (verificarFim()) return;
@@ -247,13 +256,11 @@ function proximoDia() {
   turnoManha();
 }
 
-//////////////////////
-// UI
-//////////////////////
+// =====================
+// UI (BOTÕES)
+// =====================
 
-function mostrarCena(texto, opcoes) {
-  document.getElementById("texto").innerText = texto;
-
+function mostrarOpcoes(opcoes) {
   let div = document.getElementById("opcoes");
   div.innerHTML = "";
 
@@ -265,16 +272,14 @@ function mostrarCena(texto, opcoes) {
   });
 }
 
-//////////////////////
+// =====================
 // INÍCIO
-//////////////////////
+// =====================
 
 function inicio() {
   atualizarStatus();
-  addHistoria("🏭 Você começou sua jornada.");
-  mostrarCena("Começar?", [
-    { texto: "Iniciar", acao: turnoManha }
-  ]);
+  addHistoria("🏭 Você começou sua vida na fábrica.");
+  turnoManha();
 }
 
 inicio();
