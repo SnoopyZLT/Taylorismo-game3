@@ -1,38 +1,112 @@
+// =====================
+// DADOS
+// =====================
+
 let jogador = {
   eficiencia: 50,
   saude: 80,
   satisfacao: 60,
-  dinheiro: 0,
+  dinheiro: 50,
   dia: 1,
-  estilo: "neutro" // IA: trabalhador, rebelde, neutro
+  turno: "manha",
+  estilo: "neutro",
+  cargo: "Operário",
+  reputacao: 50,
+  empresa: false,
+  narrativaSeed: Math.floor(Math.random() * 1000),
+  historico: []
 };
 
 //////////////////////
-// HUD COM BARRAS
+// HISTÓRIA (LOG)
 //////////////////////
 
-function barra(valor) {
-  return `
-    <div class="barra">
-      <div class="progresso" style="width:${valor}%"></div>
-    </div>
-  `;
+function adicionarHistoria(texto) {
+  jogador.historico.unshift(texto);
+
+  let html = jogador.historico
+    .slice(0, 20)
+    .map(e => `<div class="logItem">${e}</div>`)
+    .join("");
+
+  document.getElementById("historia").innerHTML = html;
+}
+
+//////////////////////
+// HUD
+//////////////////////
+
+function barra(v) {
+  return `<div class="barra"><div class="progresso" style="width:${v}%"></div></div>`;
 }
 
 function atualizarStatus() {
   document.getElementById("status").innerHTML = `
-  <b>📅 Dia ${jogador.dia}</b><br><br>
+  <div class="card">
+    📅 Dia ${jogador.dia} - ${jogador.turno.toUpperCase()}<br>
+    🏢 ${jogador.cargo} ${jogador.empresa ? "(Dono)" : ""}<br>
+    💰 ${jogador.dinheiro} | ⭐ ${jogador.reputacao}<br>
+    🧠 ${jogador.estilo}
+  </div>
 
-  ⚙️ Eficiência ${barra(jogador.eficiencia)}
-  ❤️ Saúde ${barra(jogador.saude)}
-  😐 Satisfação ${barra(jogador.satisfacao)}
-  💰 Dinheiro: ${jogador.dinheiro}<br>
-  🧠 Estilo: ${jogador.estilo}
+  ⚙️ ${barra(jogador.eficiencia)}
+  ❤️ ${barra(jogador.saude)}
+  😐 ${barra(jogador.satisfacao)}
   `;
 }
 
 //////////////////////
-// CENAS
+// IA NARRATIVA
+//////////////////////
+
+function narrativa() {
+  let seed = jogador.narrativaSeed + jogador.dia;
+
+  let eventos = [
+    "📊 Um inspetor está observando.",
+    "⚠️ Produção em alta pressão.",
+    "👥 Funcionários estão inquietos.",
+    "💼 Chance de crescimento apareceu."
+  ];
+
+  return eventos[seed % eventos.length];
+}
+
+function registrar(acao) {
+  if (acao === "trabalhar") jogador.estilo = "produtivo";
+  if (acao === "rebelde") jogador.estilo = "rebelde";
+}
+
+//////////////////////
+// PROMOÇÃO
+//////////////////////
+
+function promocao() {
+  if (jogador.eficiencia > 80 && jogador.cargo === "Operário") {
+    jogador.cargo = "Supervisor";
+    adicionarHistoria("🎉 Promovido a Supervisor!");
+  }
+
+  if (jogador.eficiencia > 110 && jogador.cargo === "Supervisor") {
+    jogador.cargo = "Gerente";
+    adicionarHistoria("🚀 Agora você é Gerente!");
+  }
+}
+
+//////////////////////
+// EMPRESA
+//////////////////////
+
+function verificarEmpresa() {
+  if (jogador.dinheiro >= 300 && !jogador.empresa) {
+    jogador.empresa = true;
+    jogador.cargo = "Empresário";
+    adicionarHistoria("🏢 Você abriu sua própria empresa!");
+  }
+}
+
+//////////////////////
+// CENA
 //////////////////////
 
 function mostrarCena(texto, opcoes) {
@@ -50,128 +124,138 @@ function mostrarCena(texto, opcoes) {
 }
 
 //////////////////////
-// IA (MUDA HISTÓRIA)
+// TURNOS
 //////////////////////
 
-function atualizarEstilo(acao) {
-  if (acao === "trabalhar") jogador.estilo = "trabalhador";
-  if (acao === "rebelde") jogador.estilo = "rebelde";
-}
+function turnoManha() {
+  atualizarStatus();
+  adicionarHistoria(`🌅 Dia ${jogador.dia} - Manhã`);
 
-function eventoIA() {
-  if (jogador.estilo === "trabalhador") {
-    jogador.eficiencia += 5;
-    return "📈 Seu esforço está sendo reconhecido pelo sistema.";
-  }
-
-  if (jogador.estilo === "rebelde") {
-    jogador.satisfacao += 5;
-    jogador.eficiencia -= 5;
-    return "✊ Você começa a influenciar outros trabalhadores.";
-  }
-
-  return "😐 Mais um dia comum na fábrica.";
-}
-
-//////////////////////
-// EVENTOS ALEATÓRIOS
-//////////////////////
-
-function eventoAleatorio() {
-  let eventos = [
-    () => {
-      jogador.saude -= 10;
-      return "😷 Você ficou doente.";
+  mostrarCena(narrativa(), [
+    {
+      texto: "⚙️ Produzir muito",
+      acao: () => {
+        registrar("trabalhar");
+        jogador.eficiencia += 10;
+        jogador.saude -= 5;
+        jogador.dinheiro += 15;
+        adicionarHistoria("Você trabalhou intensamente.");
+        proximoTurno();
+      }
     },
-    () => {
-      jogador.dinheiro += 20;
-      return "💰 Bônus inesperado!";
+    {
+      texto: "📚 Estudar técnicas",
+      acao: () => {
+        jogador.eficiencia += 5;
+        jogador.reputacao += 5;
+        adicionarHistoria("Você estudou novas técnicas.");
+        proximoTurno();
+      }
     },
-    () => {
-      jogador.satisfacao -= 10;
-      return "😡 O chefe brigou com você.";
+    {
+      texto: "😐 Fazer o básico",
+      acao: () => {
+        jogador.satisfacao += 5;
+        adicionarHistoria("Você fez apenas o necessário.");
+        proximoTurno();
+      }
+    },
+    {
+      texto: "✊ Reclamar",
+      acao: () => {
+        registrar("rebelde");
+        jogador.satisfacao += 10;
+        jogador.reputacao -= 5;
+        adicionarHistoria("Você reclamou do sistema.");
+        proximoTurno();
+      }
+    },
+    {
+      texto: "💰 Fazer trabalho extra",
+      acao: () => {
+        jogador.dinheiro += 20;
+        jogador.saude -= 5;
+        adicionarHistoria("Você fez trabalho extra.");
+        proximoTurno();
+      }
     }
-  ];
-
-  return eventos[Math.floor(Math.random() * eventos.length)]();
-}
-
-//////////////////////
-// FINAIS
-//////////////////////
-
-function verificarFim() {
-  if (jogador.saude <= 0) return final("💀 Você colapsou.");
-  if (jogador.satisfacao <= 0) return final("😐 Você foi demitido.");
-
-  if (jogador.estilo === "trabalhador" && jogador.eficiencia >= 120) {
-    return final("🏆 Você virou supervisor!");
-  }
-
-  if (jogador.estilo === "rebelde" && jogador.satisfacao >= 100) {
-    return final("✊ Você liderou uma revolução!");
-  }
-
-  if (jogador.dinheiro >= 200) {
-    return final("💰 Você ficou rico!");
-  }
-
-  return false;
-}
-
-function final(msg) {
-  mostrarCena(msg, [
-    { texto: "🔄 Jogar novamente", acao: () => location.reload() }
   ]);
 }
 
+function turnoTarde() {
+  atualizarStatus();
+  adicionarHistoria(`🌇 Dia ${jogador.dia} - Tarde`);
+
+  let opcoes = [
+    {
+      texto: "💼 Impressionar chefe",
+      acao: () => {
+        jogador.eficiencia += 10;
+        jogador.reputacao += 5;
+        adicionarHistoria("Você impressionou o chefe.");
+        proximoDia();
+      }
+    },
+    {
+      texto: "🧘 Descansar",
+      acao: () => {
+        jogador.saude += 10;
+        adicionarHistoria("Você descansou.");
+        proximoDia();
+      }
+    },
+    {
+      texto: "🔥 Incentivar revolta",
+      acao: () => {
+        registrar("rebelde");
+        jogador.satisfacao += 10;
+        adicionarHistoria("Você incentivou uma revolta.");
+        proximoDia();
+      }
+    },
+    {
+      texto: "📈 Melhorar processo",
+      acao: () => {
+        jogador.eficiencia += 8;
+        adicionarHistoria("Você melhorou o processo.");
+        proximoDia();
+      }
+    }
+  ];
+
+  // SE FOR DONO DA EMPRESA
+  if (jogador.empresa) {
+    opcoes.push({
+      texto: "🏢 Gerenciar funcionários",
+      acao: () => {
+        jogador.dinheiro += 30;
+        jogador.satisfacao -= 5;
+        adicionarHistoria("Você gerenciou seus funcionários.");
+        proximoDia();
+      }
+    });
+  }
+
+  mostrarCena(narrativa(), opcoes);
+}
+
 //////////////////////
-// LOOP
+// FLUXO
 //////////////////////
+
+function proximoTurno() {
+  jogador.turno = "tarde";
+  promocao();
+  verificarEmpresa();
+  turnoTarde();
+}
 
 function proximoDia() {
   jogador.dia++;
-
-  let evento = eventoAleatorio();
-  let eventoIAmsg = eventoIA();
-
-  atualizarStatus();
-
-  mostrarCena(
-    `Dia ${jogador.dia}\n\n${evento}\n${eventoIAmsg}`,
-    [
-      {
-        texto: "⚙️ Trabalhar duro",
-        acao: () => {
-          atualizarEstilo("trabalhar");
-          jogador.eficiencia += 10;
-          jogador.saude -= 5;
-          jogador.dinheiro += 10;
-          atualizarStatus();
-          if (!verificarFim()) proximoDia();
-        }
-      },
-      {
-        texto: "😐 Fazer o mínimo",
-        acao: () => {
-          jogador.satisfacao += 5;
-          jogador.eficiencia -= 5;
-          atualizarStatus();
-          if (!verificarFim()) proximoDia();
-        }
-      },
-      {
-        texto: "✊ Questionar o sistema",
-        acao: () => {
-          atualizarEstilo("rebelde");
-          jogador.satisfacao += 10;
-          jogador.eficiencia -= 10;
-          atualizarStatus();
-          if (!verificarFim()) proximoDia();
-        }
-      }
-    ]
-  );
+  jogador.turno = "manha";
+  promocao();
+  verificarEmpresa();
+  turnoManha();
 }
 
 //////////////////////
@@ -180,27 +264,14 @@ function proximoDia() {
 
 function inicio() {
   atualizarStatus();
+  adicionarHistoria("🏭 Você começou sua vida na fábrica.");
 
-  mostrarCena("🏭 Você entrou na fábrica.", [
+  mostrarCena("Começar jornada", [
     {
-      texto: "⚙️ Seguir regras",
-      acao: () => {
-        atualizarEstilo("trabalhar");
-        jogador.eficiencia += 5;
-        atualizarStatus();
-        proximoDia();
-      }
-    },
-    {
-      texto: "✊ Questionar",
-      acao: () => {
-        atualizarEstilo("rebelde");
-        jogador.satisfacao += 5;
-        atualizarStatus();
-        proximoDia();
-      }
+      texto: "Iniciar",
+      acao: () => turnoManha()
     }
   ]);
 }
 
-inicio();
+inicio()
