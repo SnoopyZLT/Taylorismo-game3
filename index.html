@@ -7,19 +7,36 @@
 </head>
 <body>
 
+<!-- TOPO -->
 <div class="topo">
-  <h2>🏭 Simulador</h2>
-  <div>💰 <span id="money"></span></div>
+  <div class="menu">☰</div>
+  <div class="logo">🏭 Simulador</div>
+  <div class="dinheiro">💰 <span id="money">0</span></div>
 </div>
 
-<div id="status"></div>
+<!-- INFO JOGADOR -->
+<div class="perfil">
+  <div class="nome">Operário Taylorista</div>
+  <div class="sub">Fábrica • <span id="cargo"></span></div>
+</div>
 
+<!-- HISTÓRIA (CENTRO PRINCIPAL) -->
 <div id="historia"></div>
 
-<div class="centro">
-  <div id="texto"></div>
-  <div id="opcoes"></div>
+<!-- BOTÃO CENTRAL -->
+<div class="botao-centro" onclick="proximoDia()">
+  +
 </div>
+
+<!-- BARRAS -->
+<div class="barras">
+  <div>⚙️ Eficiência <div class="barra"><div id="eficienciaBar" class="progresso"></div></div></div>
+  <div>❤️ Saúde <div class="barra"><div id="saudeBar" class="progresso"></div></div></div>
+  <div>😐 Satisfação <div class="barra"><div id="satisfacaoBar" class="progresso"></div></div></div>
+</div>
+
+<!-- OPÇÕES -->
+<div id="opcoes" class="opcoes"></div>
 
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
@@ -33,4 +50,4 @@
 <script src="script.js"></script>
 
 </body>
-</html>
+  </html>
