@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Simulador Taylorista</title>
+
+  <!-- TRAVA EM VERTICAL -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
@@ -30,24 +33,44 @@
 <!-- BARRAS -->
 <div class="barras">
 
+  <!-- PROMOÇÃO -->
   <div class="blocoBarra">
-    Eficiência
-    <div class="barra"><div id="eficienciaBar" class="progresso">50%</div></div>
+    📈 Progresso de Promoção
+    <div class="barra">
+      <div id="promoBar" class="progresso">0%</div>
+    </div>
   </div>
 
+  <!-- EFICIÊNCIA -->
   <div class="blocoBarra">
-    Saúde
-    <div class="barra"><div id="saudeBar" class="progresso">80%</div></div>
+    ⚙️ Eficiência
+    <div class="barra">
+      <div id="eficienciaBar" class="progresso">50%</div>
+    </div>
   </div>
 
+  <!-- SAÚDE -->
   <div class="blocoBarra">
-    Satisfação
-    <div class="barra"><div id="satisfacaoBar" class="progresso">60%</div></div>
+    ❤️ Saúde
+    <div class="barra">
+      <div id="saudeBar" class="progresso">80%</div>
+    </div>
   </div>
 
+  <!-- SATISFAÇÃO -->
+  <div class="blocoBarra">
+    😐 Satisfação
+    <div class="barra">
+      <div id="satisfacaoBar" class="progresso">60%</div>
+    </div>
+  </div>
+
+  <!-- FÁBRICA -->
   <div id="barraEmpresa" class="blocoBarra" style="display:none">
-    Sucesso da Fábrica
-    <div class="barra"><div id="empresaBar" class="progresso">0%</div></div>
+    🏢 Sucesso da Fábrica
+    <div class="barra">
+      <div id="empresaBar" class="progresso">0%</div>
+    </div>
   </div>
 
 </div>
@@ -64,6 +87,11 @@
   </div>
 </div>
 
+<!-- MÚSICA -->
+<audio autoplay loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mp3">
+</audio>
+
 <script src="script.js"></script>
 </body>
-</html>
+  </html>
