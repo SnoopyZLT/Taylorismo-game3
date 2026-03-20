@@ -7,15 +7,28 @@
 </head>
 <body>
 
-<h1>🏭 Simulador Taylorista</h1>
+<div class="topo">
+  <h2>🏭 Simulador</h2>
+  <div>💰 <span id="money"></span></div>
+</div>
 
 <div id="status"></div>
 
-<!-- 🔥 ADICIONE ISSO AQUI -->
 <div id="historia"></div>
 
-<div id="texto"></div>
-<div id="opcoes"></div>
+<div class="centro">
+  <div id="texto"></div>
+  <div id="opcoes"></div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-content">
+    <h2 id="popupTitulo"></h2>
+    <p id="popupTexto"></p>
+    <div id="popupOpcoes"></div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 
