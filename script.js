@@ -9,6 +9,11 @@ const cargoBar = document.getElementById("cargoBar");
 
 const moneyTxt = document.getElementById("money");
 
+const popup = document.getElementById("popup");
+const popupTitulo = document.getElementById("popupTitulo");
+const popupTexto = document.getElementById("popupTexto");
+const popupOpcoes = document.getElementById("popupOpcoes");
+
 // ===== ESTADO =====
 let jogador = {
   dinheiro: 0,
@@ -23,13 +28,38 @@ let jogador = {
   dia: 1,
   turno: "Manhã",
 
-  temFabrica: false
+  temFabrica: false,
+  jogoAcabou: false
 };
 
-// ===== HISTÓRIA =====
+// ===== HISTÓRIA (IA) =====
+function narrativaIA() {
+  if (jogador.eficiencia > 80) {
+    return "🔥 Você está se destacando na produção.";
+  }
+  if (jogador.satisfacao < 30) {
+    return "😡 O clima está tenso entre os trabalhadores.";
+  }
+  if (jogador.saude < 30) {
+    return "💀 Você está exausto fisicamente.";
+  }
+  if (jogador.temFabrica) {
+    return "🏭 Sua fábrica está sob sua responsabilidade.";
+  }
+
+  const neutro = [
+    "O trabalho segue normalmente.",
+    "A rotina da fábrica continua.",
+    "O dia foi produtivo.",
+    "Nada fora do comum aconteceu."
+  ];
+
+  return neutro[Math.floor(Math.random() * neutro.length)];
+}
+
 function addHistoria(txt) {
   historia.innerHTML =
-    `📅 Dia ${jogador.dia} (${jogador.turno})<br>${txt}<br><br>` +
+    `📅 Dia ${jogador.dia} (${jogador.turno})<br>${txt}<br>${narrativaIA()}<br><br>` +
     historia.innerHTML;
 
   historia.scrollTop = 0;
@@ -41,7 +71,6 @@ function atualizarBarras() {
   setBar(saudeBar, jogador.saude, "❤️ Saúde");
   setBar(satisfacaoBar, jogador.satisfacao, "🙂 Satisfação");
 
-  // FÁBRICA
   if (jogador.temFabrica) {
     setBar(empresaBar, jogador.empresa, "🏭 Fábrica");
     empresaBar.style.background = "#4169E1";
@@ -51,12 +80,8 @@ function atualizarBarras() {
     empresaBar.style.background = "black";
   }
 
-  // CARGO
-  if (cargoBar) {
-    cargoBar.style.width = jogador.progressoCargo + "%";
-    cargoBar.innerText =
-      "Cargo: " + jogador.cargo + " (" + jogador.progressoCargo + "%)";
-  }
+  cargoBar.style.width = jogador.progressoCargo + "%";
+  cargoBar.innerText = `Cargo: ${jogador.cargo} (${jogador.progressoCargo}%)`;
 
   moneyTxt.innerText = "💰 " + jogador.dinheiro;
 }
@@ -67,12 +92,56 @@ function setBar(el, valor, nome) {
   el.innerText = `${nome} (${valor}%)`;
 }
 
+// ===== POPUP REAL =====
+function mostrarPopup(titulo, texto, opcoes) {
+  popup.classList.remove("hidden");
+
+  popupTitulo.innerText = titulo;
+  popupTexto.innerText = texto;
+  popupOpcoes.innerHTML = "";
+
+  opcoes.forEach(op => {
+    const btn = document.createElement("button");
+    btn.innerText = op.texto + (op.efeito ? ` (${op.efeito})` : "");
+
+    btn.onclick = () => {
+      popup.classList.add("hidden");
+      op.acao();
+    };
+
+    popupOpcoes.appendChild(btn);
+  });
+}
+
+// ===== EVENTOS =====
+function gerarEvento() {
+  if (jogador.dia % 3 !== 0 || jogador.turno !== "Manhã") return;
+
+  mostrarPopup("⚠ Evento", "Algo aconteceu na fábrica!", [
+    {
+      texto: "Resolver",
+      efeito: "+Eficiência -Saúde",
+      acao: () => {
+        jogador.eficiencia += 10;
+        jogador.saude -= 5;
+        avancarTurno("Você resolveu o problema.");
+      }
+    },
+    {
+      texto: "Ignorar",
+      efeito: "-Satisfação",
+      acao: () => {
+        jogador.satisfacao -= 10;
+        avancarTurno("Você ignorou o problema.");
+      }
+    }
+  ]);
+}
+
 // ===== BOTÕES =====
 function atualizarBotoes() {
   const esq = document.getElementById("opcoes-esquerda");
   const dir = document.getElementById("opcoes-direita");
-
-  if (!esq || !dir) return;
 
   esq.innerHTML = "";
   dir.innerHTML = "";
@@ -94,16 +163,16 @@ function atualizarBotoes() {
   dir.appendChild(btnF);
 }
 
-function criarBotao(container, texto, acao) {
-  const btn = document.createElement("button");
-  btn.innerText = texto;
-  btn.onclick = acao;
-  container.appendChild(btn);
+function criarBotao(container, txt, acao) {
+  const b = document.createElement("button");
+  b.innerText = txt;
+  b.onclick = acao;
+  container.appendChild(b);
 }
 
-// ===== BOTÃO + (PULAR TURNO) =====
+// ===== BOTÃO + =====
 document.querySelector(".botao-centro").onclick = () => {
-  avancarTurno("⏩ Você avançou o tempo.");
+  avancarTurno("⏩ Tempo avançou.");
 };
 
 // ===== AÇÕES =====
@@ -128,14 +197,40 @@ function arriscar() {
   if (Math.random() > 0.5) {
     jogador.dinheiro += 100;
     jogador.eficiencia += 5;
-    addHistoria("🔥 Deu certo!");
+    avancarTurno("🔥 Deu certo!");
   } else {
     jogador.dinheiro -= 50;
     jogador.saude -= 5;
-    addHistoria("💥 Deu ruim!");
+    avancarTurno("💥 Deu ruim!");
   }
+}
 
-  avancarTurno("");
+// ===== FÁBRICA =====
+function abrirFabrica() {
+  if (!jogador.temFabrica) return;
+
+  mostrarPopup("🏭 Fábrica", "Escolha uma melhoria:", [
+    {
+      texto: "Investir",
+      efeito: "+10 fábrica (-50💰)",
+      acao: () => {
+        if (jogador.dinheiro < 50) return;
+        jogador.dinheiro -= 50;
+        jogador.empresa += 10;
+        avancarTurno("Você investiu na fábrica.");
+      }
+    },
+    {
+      texto: "Treinar equipe",
+      efeito: "+10 eficiência (-40💰)",
+      acao: () => {
+        if (jogador.dinheiro < 40) return;
+        jogador.dinheiro -= 40;
+        jogador.eficiencia += 10;
+        avancarTurno("Equipe treinada.");
+      }
+    }
+  ]);
 }
 
 // ===== SALÁRIO =====
@@ -145,7 +240,7 @@ function salario() {
   if (jogador.cargo === "Gerente") return 100;
 }
 
-// ===== PROGRESSO DE CARGO =====
+// ===== PROMOÇÃO =====
 function progressoCargo(valor) {
   jogador.progressoCargo += valor;
 
@@ -163,27 +258,10 @@ function progressoCargo(valor) {
   }
 }
 
-// ===== FÁBRICA =====
-function abrirFabrica() {
-  if (!jogador.temFabrica) return;
-
-  alert("Sistema de fábrica funcionando (pode evoluir depois 😈)");
-
-  jogador.empresa += 10;
-  jogador.dinheiro -= 50;
-
-  avancarTurno("Você investiu na fábrica.");
-}
-
-// ===== EVENTOS =====
-function gerarEvento() {
-  if (jogador.dia % 3 !== 0 || jogador.turno !== "Manhã") return;
-
-  alert("⚠ Evento aleatório ocorreu!");
-}
-
 // ===== TURNOS =====
 function avancarTurno(msg) {
+  if (jogador.jogoAcabou) return;
+
   if (msg) addHistoria(msg);
 
   if (jogador.turno === "Manhã") {
@@ -195,11 +273,28 @@ function avancarTurno(msg) {
 
   gerarEvento();
 
+  checarFinais();
+
   atualizarBarras();
   atualizarBotoes();
 }
 
-// ===== INÍCIO =====
+// ===== FINAIS =====
+function checarFinais() {
+  if (jogador.empresa >= 100 && !jogador.jogoAcabou) {
+    jogador.jogoAcabou = true;
+
+    mostrarPopup("🏆 Vitória", "Você construiu uma fábrica de sucesso!", []);
+  }
+
+  if (jogador.satisfacao <= 0 && !jogador.jogoAcabou) {
+    jogador.jogoAcabou = true;
+
+    mostrarPopup("💀 Derrota", "Você foi demitido.", []);
+  }
+}
+
+// ===== START =====
 addHistoria("Você começou como operário.");
 atualizarBarras();
 atualizarBotoes();
