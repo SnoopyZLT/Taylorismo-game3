@@ -1,15 +1,21 @@
+/* ===================== */
+/* BASE */
+/* ===================== */
+
 body {
   margin: 0;
   font-family: Arial;
   background: #f0f4ff;
 
-  /* FIXAR MOBILE */
   max-width: 500px;
   margin: auto;
   overflow-x: hidden;
 }
 
+/* ===================== */
 /* TOPO */
+/* ===================== */
+
 .topo {
   background: #4169E1;
   color: white;
@@ -19,13 +25,19 @@ body {
   font-weight: bold;
 }
 
+/* ===================== */
 /* PERFIL */
+/* ===================== */
+
 .perfil {
   background: #dbe4ff;
   padding: 10px;
 }
 
+/* ===================== */
 /* HISTÓRIA */
+/* ===================== */
+
 #historia {
   background: white;
   height: 250px;
@@ -35,7 +47,10 @@ body {
   border-bottom: 2px solid #ccc;
 }
 
+/* ===================== */
 /* BOTÃO CENTRAL */
+/* ===================== */
+
 .botao-centro {
   position: fixed;
   bottom: 110px;
@@ -53,7 +68,10 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
+/* ===================== */
 /* BARRAS */
+/* ===================== */
+
 .barras {
   padding: 10px;
 }
@@ -63,7 +81,7 @@ body {
   font-size: 14px;
 }
 
-/* BARRA VISUAL */
+/* BARRA */
 .barra {
   width: 100%;
   height: 18px;
@@ -99,7 +117,10 @@ body {
   line-height: 18px;
 }
 
+/* ===================== */
 /* OPÇÕES */
+/* ===================== */
+
 #opcoes {
   position: fixed;
   bottom: 0;
@@ -107,20 +128,33 @@ body {
   background: #4169E1;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
 }
 
 /* BOTÕES */
 #opcoes button {
-  width: 50%;
-  padding: 18px;
+  width: 45%;
+  margin: 5px;
+  padding: 15px;
   border: none;
   color: white;
-  background: transparent;
+  background: #5a7df0;
   font-size: 15px;
-  border-top: 1px solid rgba(255,255,255,0.3);
+  border-radius: 15px;
+  transition: 0.2s;
 }
 
+/* EFEITO */
+#opcoes button:active {
+  transform: scale(0.95);
+  background: #2f54d4;
+}
+
+/* ===================== */
 /* POPUP */
+/* ===================== */
+
 .popup {
   position: fixed;
   top: 0;
@@ -138,13 +172,32 @@ body {
   padding: 20px;
   border-radius: 15px;
   width: 90%;
+  text-align: center;
 }
+
+/* BOTÕES DO POPUP */
+#popupOpcoes button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 12px;
+  border: none;
+  background: #4169E1;
+  color: white;
+  border-radius: 15px;
+}
+
+/* ===================== */
+/* UTIL */
+/* ===================== */
 
 .hidden {
   display: none;
 }
 
-/* ÁUDIO */
+/* ===================== */
+/* AUDIO */
+/* ===================== */
+
 audio {
   display: none;
   }
