@@ -1,87 +1,83 @@
-/* ===================== */
-/* BASE */
-/* ===================== */
-
 body {
   margin: 0;
   font-family: Arial;
   background: #f0f4ff;
-
   max-width: 500px;
   margin: auto;
-  overflow-x: hidden;
 }
 
-/* ===================== */
-/* TOPO */
-/* ===================== */
-
-.topo {
-  background: #4169E1;
-  color: white;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-}
-
-/* ===================== */
-/* PERFIL */
-/* ===================== */
-
-.perfil {
-  background: #dbe4ff;
-  padding: 10px;
-}
-
-/* ===================== */
 /* HISTÓRIA */
-/* ===================== */
-
 #historia {
   background: white;
-  height: 250px;
+  height: 220px;
   overflow-y: auto;
   padding: 10px;
-  font-size: 14px;
-  border-bottom: 2px solid #ccc;
+  scroll-behavior: smooth;
 }
 
-/* ===================== */
-/* BOTÃO CENTRAL */
-/* ===================== */
+#historia div {
+  animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BOTÕES = + = */
+#acoes-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+#opcoes-esquerda,
+#opcoes-direita {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#opcoes-esquerda button,
+#opcoes-direita button {
+  width: 120px;
+  padding: 12px;
+  border: none;
+  border-radius: 15px;
+  background: #5a7df0;
+  color: white;
+  font-size: 14px;
+}
 
 .botao-centro {
-  position: fixed;
-  bottom: 110px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #4169E1;
-  color: white;
+  margin: 0 15px;
   width: 70px;
   height: 70px;
+  background: #4169E1;
+  color: white;
+  font-size: 30px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* ===================== */
 /* BARRAS */
-/* ===================== */
-
 .barras {
   padding: 10px;
 }
 
 .blocoBarra {
   margin-bottom: 10px;
-  font-size: 14px;
 }
 
-/* BARRA */
 .barra {
   width: 100%;
   height: 18px;
@@ -92,7 +88,6 @@ body {
   position: relative;
 }
 
-/* SUBDIVISÕES */
 .barra::after {
   content: "";
   position: absolute;
@@ -102,59 +97,22 @@ body {
     to right,
     transparent,
     transparent 10%,
-    rgba(0,0,0,0.15) 10%,
-    rgba(0,0,0,0.15) 11%
+    rgba(0,0,0,0.2) 10%,
+    rgba(0,0,0,0.2) 11%
   );
 }
 
-/* PROGRESSO */
 .progresso {
   height: 100%;
   background: #4169E1;
   color: white;
-  font-size: 12px;
   text-align: center;
+  font-size: 12px;
   line-height: 18px;
+  transition: width 0.6s ease-in-out;
 }
 
-/* ===================== */
-/* OPÇÕES */
-/* ===================== */
-
-#opcoes {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #4169E1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 10px;
-}
-
-/* BOTÕES */
-#opcoes button {
-  width: 45%;
-  margin: 5px;
-  padding: 15px;
-  border: none;
-  color: white;
-  background: #5a7df0;
-  font-size: 15px;
-  border-radius: 15px;
-  transition: 0.2s;
-}
-
-/* EFEITO */
-#opcoes button:active {
-  transform: scale(0.95);
-  background: #2f54d4;
-}
-
-/* ===================== */
 /* POPUP */
-/* ===================== */
-
 .popup {
   position: fixed;
   top: 0;
@@ -172,32 +130,18 @@ body {
   padding: 20px;
   border-radius: 15px;
   width: 90%;
-  text-align: center;
 }
 
-/* BOTÕES DO POPUP */
 #popupOpcoes button {
   width: 100%;
   margin: 5px 0;
   padding: 12px;
-  border: none;
+  border-radius: 15px;
   background: #4169E1;
   color: white;
-  border-radius: 15px;
+  border: none;
 }
-
-/* ===================== */
-/* UTIL */
-/* ===================== */
 
 .hidden {
   display: none;
-}
-
-/* ===================== */
-/* AUDIO */
-/* ===================== */
-
-audio {
-  display: none;
-  }
+    }
