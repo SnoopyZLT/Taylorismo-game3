@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- RESPONSIVIDADE (ESSENCIAL) -->
+  <!-- RESPONSIVIDADE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Simulador Taylorista</title>
@@ -18,9 +18,13 @@
   <span id="money">💰 0</span>
 </div>
 
-<!-- PERFIL -->
+<!-- BARRA DE CARGO -->
 <div class="perfil">
-  <div id="cargo">Cargo: Operário</div>
+  <div class="blocoBarra">
+    <div class="barra">
+      <div id="cargoBar" class="progresso"></div>
+    </div>
+  </div>
 </div>
 
 <!-- HISTÓRIA -->
@@ -28,11 +32,16 @@
 
 <!-- AÇÕES = + = -->
 <div id="acoes-container">
+
+  <!-- ESQUERDA -->
   <div id="opcoes-esquerda"></div>
 
+  <!-- BOTÃO CENTRAL -->
   <div class="botao-centro">+</div>
 
+  <!-- DIREITA -->
   <div id="opcoes-direita"></div>
+
 </div>
 
 <!-- BARRAS -->
@@ -64,7 +73,7 @@
 
 </div>
 
-<!-- POPUP -->
+<!-- POPUP (PARA EVENTOS FUTUROS) -->
 <div id="popup" class="popup hidden">
   <div class="popup-content">
     <h3 id="popupTitulo"></h3>
