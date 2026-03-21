@@ -6,31 +6,31 @@ body {
   margin: auto;
 }
 
+/* TOPO */
+.topo {
+  background: #4169E1;
+  color: white;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+/* PERFIL */
+.perfil {
+  padding: 10px;
+  background: #dbe4ff;
+}
+
 /* HISTÓRIA */
 #historia {
   background: white;
-  height: 220px;
+  height: 200px;
   overflow-y: auto;
   padding: 10px;
-  scroll-behavior: smooth;
 }
 
-#historia div {
-  animation: aparecer 0.3s ease;
-}
-
-@keyframes aparecer {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* BOTÕES = + = */
+/* AÇÕES */
 #acoes-container {
   display: flex;
   justify-content: center;
@@ -38,6 +38,7 @@ body {
   margin: 20px 0;
 }
 
+/* LADOS */
 #opcoes-esquerda,
 #opcoes-direita {
   display: flex;
@@ -45,17 +46,18 @@ body {
   gap: 10px;
 }
 
+/* BOTÕES */
 #opcoes-esquerda button,
 #opcoes-direita button {
   width: 120px;
   padding: 12px;
-  border: none;
   border-radius: 15px;
+  border: none;
   background: #5a7df0;
   color: white;
-  font-size: 14px;
 }
 
+/* BOTÃO + CENTRAL */
 .botao-centro {
   margin: 0 15px;
   width: 70px;
@@ -72,6 +74,7 @@ body {
 /* BARRAS */
 .barras {
   padding: 10px;
+  margin-top: 10px;
 }
 
 .blocoBarra {
@@ -85,21 +88,6 @@ body {
   border: 2px solid black;
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
-}
-
-.barra::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent 10%,
-    rgba(0,0,0,0.2) 10%,
-    rgba(0,0,0,0.2) 11%
-  );
 }
 
 .progresso {
@@ -108,8 +96,7 @@ body {
   color: white;
   text-align: center;
   font-size: 12px;
-  line-height: 18px;
-  transition: width 0.6s ease-in-out;
+  transition: width 0.5s;
 }
 
 /* POPUP */
@@ -132,16 +119,6 @@ body {
   width: 90%;
 }
 
-#popupOpcoes button {
-  width: 100%;
-  margin: 5px 0;
-  padding: 12px;
-  border-radius: 15px;
-  background: #4169E1;
-  color: white;
-  border: none;
-}
-
 .hidden {
   display: none;
-    }
+}
