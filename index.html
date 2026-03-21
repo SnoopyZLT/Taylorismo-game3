@@ -3,95 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>Simulador Taylorista</title>
-
-  <!-- TRAVA EM VERTICAL -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- TOPO -->
 <div class="topo">
-  <div>☰</div>
-  <div>🏭 Simulador</div>
-  <div>💰 <span id="money">0</span></div>
+  <span>🏭 Simulador</span>
+  <span id="money">💰 0</span>
 </div>
 
 <!-- PERFIL -->
 <div class="perfil">
-  <div class="nome">Operário</div>
-  <div class="sub">Cargo: <span id="cargo">Operário</span></div>
+  <div id="cargo">Cargo: Operário</div>
 </div>
 
 <!-- HISTÓRIA -->
 <div id="historia"></div>
 
-<!-- BOTÃO CENTRAL -->
-<div class="botao-centro" onclick="proximoDia()">+</div>
+<!-- AÇÕES = + = -->
+<div id="acoes-container">
+  <div id="opcoes-esquerda"></div>
+
+  <div class="botao-centro">+</div>
+
+  <div id="opcoes-direita"></div>
+</div>
 
 <!-- BARRAS -->
 <div class="barras">
 
-  <!-- PROMOÇÃO -->
   <div class="blocoBarra">
-    📈 Progresso de Promoção
-    <div class="barra">
-      <div id="promoBar" class="progresso">0%</div>
-    </div>
+    📈 Progresso
+    <div class="barra"><div id="promoBar" class="progresso"></div></div>
   </div>
 
-  <!-- EFICIÊNCIA -->
   <div class="blocoBarra">
-    ⚙️ Eficiência
-    <div class="barra">
-      <div id="eficienciaBar" class="progresso">50%</div>
-    </div>
+    ⚙ Eficiência
+    <div class="barra"><div id="eficienciaBar" class="progresso"></div></div>
   </div>
 
-  <!-- SAÚDE -->
   <div class="blocoBarra">
     ❤️ Saúde
-    <div class="barra">
-      <div id="saudeBar" class="progresso">80%</div>
-    </div>
+    <div class="barra"><div id="saudeBar" class="progresso"></div></div>
   </div>
 
-  <!-- SATISFAÇÃO -->
   <div class="blocoBarra">
-    😐 Satisfação
-    <div class="barra">
-      <div id="satisfacaoBar" class="progresso">60%</div>
-    </div>
+    🙂 Satisfação
+    <div class="barra"><div id="satisfacaoBar" class="progresso"></div></div>
   </div>
 
-  <!-- FÁBRICA -->
-  <div id="barraEmpresa" class="blocoBarra" style="display:none">
-    🏢 Sucesso da Fábrica
-    <div class="barra">
-      <div id="empresaBar" class="progresso">0%</div>
-    </div>
+  <div class="blocoBarra">
+    🏢 Fábrica
+    <div class="barra"><div id="empresaBar" class="progresso"></div></div>
   </div>
 
 </div>
 
-<!-- OPÇÕES -->
-<div id="opcoes"></div>
-
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-content">
-    <h2 id="popupTitulo"></h2>
+    <h3 id="popupTitulo"></h3>
     <p id="popupTexto"></p>
     <div id="popupOpcoes"></div>
   </div>
 </div>
 
-<!-- MÚSICA -->
-<audio autoplay loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mp3">
-</audio>
-
 <script src="script.js"></script>
+
 </body>
-  </html>
+</html>
