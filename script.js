@@ -22,6 +22,25 @@ const popupTexto = document.getElementById("popupTexto");
 const popupOpcoes = document.getElementById("popupOpcoes");
 
 // =====================
+// FUNÇÃO MOSTRAR OPÇÕES (CORREÇÃO)
+// =====================
+
+function mostrarOpcoes(lista) {
+  opcoes.innerHTML = "";
+
+  lista.forEach(op => {
+    let btn = document.createElement("button");
+    btn.innerText = op.texto;
+
+    btn.onclick = () => {
+      op.acao();
+    };
+
+    opcoes.appendChild(btn);
+  });
+}
+
+// =====================
 // DADOS DO JOGADOR
 // =====================
 
@@ -75,11 +94,13 @@ function addHistoria(txt) {
 }
 
 // =====================
-// POPUP
+// POPUP (CORRIGIDO)
 // =====================
 
 function mostrarPopup(titulo, texto, opcoesLista) {
   popup.classList.remove("hidden");
+
+  opcoes.innerHTML = ""; // limpa botões
 
   popupTitulo.innerText = titulo;
   popupTexto.innerText = texto;
@@ -237,7 +258,7 @@ function verificarFim() {
     location.reload();
   }
 
-  if (jogador.erros >= 5 || jogador.reputacao <= 0) {
+  if (jogador.reputacao <= 0) {
     alert("💀 Você foi demitido!");
     location.reload();
   }
