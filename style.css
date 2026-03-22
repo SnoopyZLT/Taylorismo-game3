@@ -1,162 +1,129 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
   font-family: Arial;
-  background: #f0f4ff;
-
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-
-  overflow-x: hidden;
+  background: #0f172a;
+  color: white;
 }
 
-/* TOPO */
+/* 🔷 TOPO */
 .topo {
-  background: #4169E1;
-  color: white;
-  padding: 12px;
+  background: linear-gradient(to right, #1e3a8a, #2563eb);
+  padding: 15px;
+  font-size: 18px;
   display: flex;
   justify-content: space-between;
-  font-size: 4vw;
 }
 
-/* PERFIL */
+/* 👤 PERFIL */
 .perfil {
+  background: #1e293b;
   padding: 10px;
-  background: #dbe4ff;
+  display: flex;
+  justify-content: space-between;
 }
 
-/* HISTÓRIA */
-#historia {
-  background: white;
-  height: 30vh;
-  min-height: 150px;
-  max-height: 300px;
+/* 📊 BARRA CARGO */
+.barra-cargo {
+  width: 100%;
+  height: 8px;
+  background: #333;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+#progressoCargo {
+  height: 100%;
+  width: 10%;
+  background: gold;
+  border-radius: 10px;
+}
+
+/* 📜 HISTÓRICO */
+#historico {
+  height: 180px;
   overflow-y: auto;
+  background: #e5e7eb;
+  color: black;
   padding: 10px;
 }
 
-/* AÇÕES */
-#acoes-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
-
-/* LADOS */
-#opcoes-esquerda,
-#opcoes-direita {
-  display: flex;
-  flex-direction: column;
+/* 🎮 BOTÕES */
+.acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
-}
-
-/* BOTÕES */
-#opcoes-esquerda button,
-#opcoes-direita button {
-  width: 35vw;
-  max-width: 140px;
-  padding: 12px;
-  border-radius: 15px;
-  border: none;
-  background: #5a7df0;
-  color: white;
-  font-size: 14px;
-}
-
-/* BOTÃO + */
-.botao-centro {
-  margin: 0 15px;
-  width: 18vw;
-  height: 18vw;
-  max-width: 80px;
-  max-height: 80px;
-  background: #4169E1;
-  color: white;
-  font-size: 6vw;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* BARRAS */
-.barras {
   padding: 10px;
 }
 
-.blocoBarra {
-  margin-bottom: 10px;
+.acoes button {
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.acoes button:nth-child(1){background:#2563eb;}
+.acoes button:nth-child(2){background:#16a34a;}
+.acoes button:nth-child(3){background:#ea580c;}
+.acoes button:nth-child(4){background:#111;}
+
+.bloqueado {
+  opacity: 0.5;
+}
+
+/* 📊 STATUS */
+.status {
+  padding: 10px;
 }
 
 .barra {
-  width: 100%;
-  height: 20px;
-  background: #ccc;
-  border: 2px solid black;
+  margin-bottom: 10px;
+}
+
+.bg {
+  background: #333;
+  height: 18px;
   border-radius: 10px;
   overflow: hidden;
 }
 
-.progresso {
+.bg div {
   height: 100%;
-  background: #4169E1;
-  color: white;
-  text-align: center;
-  font-size: 12px;
-  line-height: 20px;
-  transition: width 0.5s;
+  width: 50%;
+  background: #2563eb;
+  transition: 0.5s;
 }
 
-/* POPUP */
+/* ⚠️ POPUP */
 .popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.popup-content {
-  background: white;
+.popup-box {
+  background: #1e293b;
   padding: 20px;
   border-radius: 15px;
-  width: 90%;
+  width: 80%;
+  text-align: center;
 }
 
-#popupOpcoes button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 15px;
-  background: #4169E1;
-  color: white;
-  border: none;
-}
-
-/* OCULTO */
 .hidden {
   display: none;
 }
 
-/* TELAS PEQUENAS */
-@media (max-width: 350px) {
-  .botao-centro {
-    width: 60px;
-    height: 60px;
+.opcoes button {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
   }
-
-  #opcoes-esquerda button,
-  #opcoes-direita button {
-    width: 120px;
-  }
-}
