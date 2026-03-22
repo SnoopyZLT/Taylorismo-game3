@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador Taylorista</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Taylorista</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -15,14 +15,17 @@
   <span id="dinheiro">💰 0</span>
 </div>
 
-<!-- 👤 INFO -->
+<!-- 👤 INFO DO JOGADOR -->
 <div class="perfil">
-  <div>
-    <strong id="cargo">Cargo: Operário</strong>
+  <div class="info-esquerda">
+    <div id="cargo">Cargo: Operário</div>
+
+    <!-- 🟡 BARRA DE PROGRESSO DE CARGO -->
     <div class="barra-cargo">
       <div id="progressoCargo"></div>
     </div>
   </div>
+
   <div id="dia">📅 Dia 1 - Manhã</div>
 </div>
 
@@ -31,10 +34,23 @@
 
 <!-- 🎮 BOTÕES -->
 <div class="acoes">
-  <button onclick="trabalhar()">🔧 Trabalhar</button>
-  <button onclick="descansar()">😴 Descansar</button>
-  <button onclick="arriscar()">🎲 Arriscar</button>
-  <button id="btnFabrica" class="bloqueado">🏭 Fábrica</button>
+
+  <button onclick="trabalhar()" class="btn azul">
+    🔧 Trabalhar
+  </button>
+
+  <button onclick="descansar()" class="btn verde">
+    😴 Descansar
+  </button>
+
+  <button onclick="arriscar()" class="btn laranja">
+    🎲 Arriscar
+  </button>
+
+  <button onclick="fabricaClick()" id="btnFabrica" class="btn preto">
+    🏭 Fábrica
+  </button>
+
 </div>
 
 <!-- 📊 STATUS -->
@@ -42,32 +58,39 @@
 
   <div class="barra">
     ⚙️ Eficiência
-    <div class="bg"><div id="eficiencia"></div></div>
+    <div class="bg">
+      <div id="eficiencia"></div>
+    </div>
   </div>
 
   <div class="barra">
     ❤️ Saúde
-    <div class="bg"><div id="saude"></div></div>
+    <div class="bg">
+      <div id="saude"></div>
+    </div>
   </div>
 
   <div class="barra">
     🙂 Satisfação
-    <div class="bg"><div id="satisfacao"></div></div>
+    <div class="bg">
+      <div id="satisfacao"></div>
+    </div>
   </div>
 
   <div class="barra">
     🏭 Fábrica
-    <div class="bg"><div id="fabrica"></div></div>
+    <div class="bg">
+      <div id="fabrica"></div>
+    </div>
   </div>
 
 </div>
 
-<!-- ⚠️ POPUP -->
+<!-- ⚠️ POPUP (caso queira usar depois no lugar do alert) -->
 <div id="popup" class="popup hidden">
   <div class="popup-box">
     <h2 id="popupTitulo"></h2>
     <p id="popupTexto"></p>
-
     <div class="opcoes">
       <button onclick="escolhaEvento(1)">Opção 1</button>
       <button onclick="escolhaEvento(2)">Opção 2</button>
@@ -75,6 +98,8 @@
   </div>
 </div>
 
+<!-- SCRIPT -->
 <script src="script.js"></script>
+
 </body>
   </html>
