@@ -10,79 +10,66 @@
 <body>
 
 <!-- TOPO -->
-<header>
-  <h1>🏭 Simulador Taylorista</h1>
-  <div id="dinheiro">💰 0</div>
-</header>
+<div class="topo">
+    🏭 Simulador Taylorista
+    <span id="dinheiro">💰 0</span>
+</div>
 
-<!-- CARGO -->
-<section class="cargo">
-  <p id="cargo">Cargo: Operário</p>
-  <div class="barra">
-    <div id="barraCargo" class="fill"></div>
-    <span id="txtCargo">0%</span>
-  </div>
-</section>
+<div class="cargo">
+    <span id="cargo">Cargo: Operário (0%)</span>
+</div>
 
 <!-- HISTÓRICO -->
-<section id="historico"></section>
+<div id="log" class="log"></div>
 
 <!-- BOTÕES -->
-<section class="acoes">
-
-  <div class="linha">
+<div class="acoes">
     <button onclick="trabalhar()">🔧 Trabalhar</button>
     <button onclick="descansar()">😴 Descansar</button>
-  </div>
+</div>
 
-  <div class="linha-centro">
+<div class="acoes">
     <button onclick="arriscar()">🎲 Arriscar</button>
+    <button id="btn-fabrica" onclick="abrirFabrica()">🏭 Fábrica</button>
+</div>
 
-    <button id="btnDia" onclick="passarDia()" class="plus">+</button>
-
-    <button id="btnFabrica" disabled onclick="abrirFabrica()">🏭 Fábrica</button>
-  </div>
-
-</section>
+<!-- BOTÃO + -->
+<div class="center">
+    <button class="btn-plus" onclick="passarDia()">+</button>
+</div>
 
 <!-- BARRAS -->
-<section class="status">
-
-  <div class="barra-box">
-    <label>⚙️ Eficiência</label>
+<div class="barras">
     <div class="barra">
-      <div id="eficiencia" class="fill"></div>
-      <span id="txtEfi">50%</span>
+        <div id="eficiencia-bar">50%</div>
+        <span>⚙️ Eficiência</span>
     </div>
-  </div>
 
-  <div class="barra-box">
-    <label>❤️ Saúde</label>
     <div class="barra">
-      <div id="saude" class="fill"></div>
-      <span id="txtSau">80%</span>
+        <div id="saude-bar">80%</div>
+        <span>❤️ Saúde</span>
     </div>
-  </div>
 
-  <div class="barra-box">
-    <label>🙂 Satisfação</label>
     <div class="barra">
-      <div id="satisfacao" class="fill"></div>
-      <span id="txtSat">60%</span>
+        <div id="satisfacao-bar">60%</div>
+        <span>🙂 Satisfação</span>
     </div>
-  </div>
 
-  <div class="barra-box">
-    <label>🏭 Fábrica</label>
     <div class="barra">
-      <div id="fabrica" class="fill"></div>
-      <span id="txtFab">0%</span>
+        <div id="fabrica-bar">0%</div>
+        <span>🏭 Fábrica</span>
     </div>
-  </div>
+</div>
 
-</section>
+<!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-box">
+        <p id="popup-texto"></p>
+        <button id="btn1"></button>
+        <button id="btn2"></button>
+    </div>
+</div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
