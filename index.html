@@ -10,103 +10,79 @@
 <body>
 
 <!-- TOPO -->
-<div class="topo">
-  <span>🏭 Simulador Taylorista</span>
-  <span id="dinheiro">💰 0</span>
-</div>
+<header>
+  <h1>🏭 Simulador Taylorista</h1>
+  <div id="dinheiro">💰 0</div>
+</header>
 
-<!-- CARGO + PROGRESSO -->
-<div class="cargo-box">
-  <div id="cargo">Cargo: Operário</div>
+<!-- CARGO -->
+<section class="cargo">
+  <p id="cargo">Cargo: Operário</p>
   <div class="barra">
     <div id="barraCargo" class="fill"></div>
     <span id="txtCargo">0%</span>
   </div>
-</div>
+</section>
 
-<!-- HISTÓRIA -->
-<div id="historico" class="historico"></div>
+<!-- HISTÓRICO -->
+<section id="historico"></section>
 
 <!-- BOTÕES -->
-<div class="acoes">
+<section class="acoes">
 
-  <button onclick="trabalhar()">🔧 Trabalhar</button>
-  <button onclick="descansar()">😴 Descansar</button>
+  <div class="linha">
+    <button onclick="trabalhar()">🔧 Trabalhar</button>
+    <button onclick="descansar()">😴 Descansar</button>
+  </div>
 
   <div class="linha-centro">
     <button onclick="arriscar()">🎲 Arriscar</button>
 
-    <!-- BOTÃO + -->
-    <button id="btnDia" class="botao-plus" onclick="passarDia()">+</button>
+    <button id="btnDia" onclick="passarDia()" class="plus">+</button>
 
-    <button id="btnFabrica" onclick="abrirFabrica()" disabled>🏭 Fábrica</button>
+    <button id="btnFabrica" disabled onclick="abrirFabrica()">🏭 Fábrica</button>
   </div>
 
-</div>
+</section>
 
-<!-- BARRAS (AGORA EMBAIXO) -->
-<div class="barras">
+<!-- BARRAS -->
+<section class="status">
 
-  <div class="barra">
-    <span>⚙️ Eficiência</span>
-    <div><div id="eficiencia" class="fill"></div></div>
-  </div>
-
-  <div class="barra">
-    <span>❤️ Saúde</span>
-    <div><div id="saude" class="fill"></div></div>
-  </div>
-
-  <div class="barra">
-    <span>🙂 Satisfação</span>
-    <div><div id="satisfacao" class="fill"></div></div>
-  </div>
-
-  <div class="barra">
-    <span>🏭 Fábrica</span>
-    <div><div id="fabrica" class="fill"></div></div>
-  </div>
-
-</div>
-
-<!-- POP-UP EVENTO -->
-<div id="popupEvento" class="popup hidden">
-  <div class="popup-box">
-    <h2>⚠ Evento</h2>
-    <p id="eventoTexto"></p>
-
-    <div class="popup-opcoes">
-      <button onclick="resolverEvento()">Resolver</button>
-      <button onclick="ignorarEvento()">Ignorar</button>
+  <div class="barra-box">
+    <label>⚙️ Eficiência</label>
+    <div class="barra">
+      <div id="eficiencia" class="fill"></div>
+      <span id="txtEfi">50%</span>
     </div>
   </div>
-</div>
 
-<!-- POP-UP FÁBRICA -->
-<div id="popupFabrica" class="popup hidden">
-  <div class="popup-box">
-    <h2>🏭 Gestão da Fábrica</h2>
-
-    <button onclick="melhorarMaquinas()">⚙ Melhorar máquinas (💰 200)</button>
-    <button onclick="contratarFuncionarios()">👷 Contratar funcionários (💰 150)</button>
-    <button onclick="marketing()">📢 Investir em marketing (💰 250)</button>
-
-    <br><br>
-    <button onclick="fecharPopup()">Fechar</button>
+  <div class="barra-box">
+    <label>❤️ Saúde</label>
+    <div class="barra">
+      <div id="saude" class="fill"></div>
+      <span id="txtSau">80%</span>
+    </div>
   </div>
-</div>
 
-<!-- POP-UP FINAL -->
-<div id="popupFinal" class="popup hidden">
-  <div class="popup-box">
-    <h2 id="finalTitulo"></h2>
-    <p id="finalTexto"></p>
-
-    <button onclick="reiniciarJogo()">Reiniciar</button>
+  <div class="barra-box">
+    <label>🙂 Satisfação</label>
+    <div class="barra">
+      <div id="satisfacao" class="fill"></div>
+      <span id="txtSat">60%</span>
+    </div>
   </div>
-</div>
+
+  <div class="barra-box">
+    <label>🏭 Fábrica</label>
+    <div class="barra">
+      <div id="fabrica" class="fill"></div>
+      <span id="txtFab">0%</span>
+    </div>
+  </div>
+
+</section>
 
 <script src="script.js"></script>
 
 </body>
-      </html>
+</html>
