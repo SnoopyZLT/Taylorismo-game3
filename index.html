@@ -1,88 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-
-  <!-- RESPONSIVIDADE -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Simulador Taylorista</title>
-
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Taylorista</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- TOPO -->
+<!-- 🔷 TOPO -->
 <div class="topo">
-  <span>🏭 Simulador Taylorista</span>
-  <span id="money">💰 0</span>
+  🏭 Simulador Taylorista
+  <span id="dinheiro">💰 0</span>
 </div>
 
-<!-- BARRA DE CARGO -->
+<!-- 👤 INFO -->
 <div class="perfil">
-  <div class="blocoBarra">
-    <div class="barra">
-      <div id="cargoBar" class="progresso"></div>
+  <div>
+    <strong id="cargo">Cargo: Operário</strong>
+    <div class="barra-cargo">
+      <div id="progressoCargo"></div>
     </div>
   </div>
+  <div id="dia">📅 Dia 1 - Manhã</div>
 </div>
 
-<!-- HISTÓRIA -->
-<div id="historia"></div>
+<!-- 📜 HISTÓRICO -->
+<div id="historico"></div>
 
-<!-- AÇÕES = + = -->
-<div id="acoes-container">
-
-  <!-- ESQUERDA -->
-  <div id="opcoes-esquerda"></div>
-
-  <!-- BOTÃO CENTRAL -->
-  <div class="botao-centro">+</div>
-
-  <!-- DIREITA -->
-  <div id="opcoes-direita"></div>
-
+<!-- 🎮 BOTÕES -->
+<div class="acoes">
+  <button onclick="trabalhar()">🔧 Trabalhar</button>
+  <button onclick="descansar()">😴 Descansar</button>
+  <button onclick="arriscar()">🎲 Arriscar</button>
+  <button id="btnFabrica" class="bloqueado">🏭 Fábrica</button>
 </div>
 
-<!-- BARRAS -->
-<div class="barras">
+<!-- 📊 STATUS -->
+<div class="status">
 
-  <div class="blocoBarra">
-    <div class="barra">
-      <div id="eficienciaBar" class="progresso"></div>
-    </div>
+  <div class="barra">
+    ⚙️ Eficiência
+    <div class="bg"><div id="eficiencia"></div></div>
   </div>
 
-  <div class="blocoBarra">
-    <div class="barra">
-      <div id="saudeBar" class="progresso"></div>
-    </div>
+  <div class="barra">
+    ❤️ Saúde
+    <div class="bg"><div id="saude"></div></div>
   </div>
 
-  <div class="blocoBarra">
-    <div class="barra">
-      <div id="satisfacaoBar" class="progresso"></div>
-    </div>
+  <div class="barra">
+    🙂 Satisfação
+    <div class="bg"><div id="satisfacao"></div></div>
   </div>
 
-  <div class="blocoBarra">
-    <div class="barra">
-      <div id="empresaBar" class="progresso"></div>
-    </div>
+  <div class="barra">
+    🏭 Fábrica
+    <div class="bg"><div id="fabrica"></div></div>
   </div>
 
 </div>
 
-<!-- POPUP (PARA EVENTOS FUTUROS) -->
+<!-- ⚠️ POPUP -->
 <div id="popup" class="popup hidden">
-  <div class="popup-content">
-    <h3 id="popupTitulo"></h3>
+  <div class="popup-box">
+    <h2 id="popupTitulo"></h2>
     <p id="popupTexto"></p>
-    <div id="popupOpcoes"></div>
+
+    <div class="opcoes">
+      <button onclick="escolhaEvento(1)">Opção 1</button>
+      <button onclick="escolhaEvento(2)">Opção 2</button>
+    </div>
   </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
