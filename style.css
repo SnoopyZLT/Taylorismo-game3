@@ -1,61 +1,85 @@
-body {
+/* RESET */
+* {
     margin: 0;
-    font-family: Arial;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
     background: #0b1a33;
     color: white;
+    max-width: 420px;
+    margin: auto;
 }
 
 /* TOPO */
 .topo {
-    background: #1f4ed8;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
     padding: 15px;
     display: flex;
     justify-content: space-between;
     font-weight: bold;
+    font-size: 18px;
 }
 
+/* CARGO */
 .cargo {
+    background: #111827;
     padding: 10px;
-    background: #0f172a;
+    text-align: center;
+    font-size: 14px;
 }
 
-/* LOG */
+/* HISTÓRICO */
 .log {
-    height: 180px;
+    height: 200px;
     overflow-y: auto;
     background: #e5e7eb;
     color: black;
     padding: 10px;
+    border-bottom: 3px solid #111;
 }
 
 /* BOTÕES */
 .acoes {
     display: flex;
-    justify-content: space-around;
-    margin: 10px;
+    gap: 10px;
+    padding: 10px;
 }
 
-button {
+.acoes button {
+    flex: 1;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
-    width: 45%;
     font-weight: bold;
+    color: white;
+    font-size: 14px;
 }
+
+/* CORES DOS BOTÕES */
+.acoes:nth-child(1) button:nth-child(1) { background: #2563eb; }
+.acoes:nth-child(1) button:nth-child(2) { background: #16a34a; }
+
+.acoes:nth-child(2) button:nth-child(1) { background: #f97316; }
+.acoes:nth-child(2) button:nth-child(2) { background: #111; }
 
 /* BOTÃO + */
 .center {
     display: flex;
     justify-content: center;
-    margin: 10px;
+    margin: 10px 0;
 }
 
 .btn-plus {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
-    font-size: 25px;
-    background: #22c55e;
+    background: #2563eb;
+    font-size: 28px;
+    font-weight: bold;
+    border: none;
     color: white;
 }
 
@@ -65,23 +89,33 @@ button {
 }
 
 .barra {
-    background: #444;
-    border-radius: 10px;
-    margin: 10px 0;
+    margin-bottom: 15px;
     position: relative;
 }
 
-.barra div {
-    height: 20px;
-    background: #3b82f6;
-    border-radius: 10px;
-    text-align: center;
+.barra span {
+    font-size: 13px;
+    margin-bottom: 3px;
+    display: block;
 }
 
-.barra span {
-    position: absolute;
-    left: 10px;
-    top: -20px;
+/* FUNDO DA BARRA */
+.barra div {
+    width: 100%;
+    height: 20px;
+    background: #374151;
+    border-radius: 10px;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+/* PREENCHIMENTO */
+.barra div div {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
 }
 
 /* POPUP */
@@ -91,15 +125,23 @@ button {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.7);
 }
 
 .popup-box {
-    background: white;
-    color: black;
-    margin: 50% auto;
+    background: #1f2937;
+    color: white;
     padding: 20px;
+    border-radius: 15px;
     width: 80%;
-    border-radius: 10px;
+    margin: 50% auto;
     text-align: center;
+    border: 2px solid #2563eb;
 }
+
+.popup-box button {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    }
