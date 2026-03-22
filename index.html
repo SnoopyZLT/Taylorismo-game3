@@ -1,105 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador Taylorista</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Taylorista</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- 🔷 TOPO -->
+<!-- TOPO -->
 <div class="topo">
-  🏭 Simulador Taylorista
+  <span>🏭 Simulador Taylorista</span>
   <span id="dinheiro">💰 0</span>
 </div>
 
-<!-- 👤 INFO DO JOGADOR -->
-<div class="perfil">
-  <div class="info-esquerda">
-    <div id="cargo">Cargo: Operário</div>
-
-    <!-- 🟡 BARRA DE PROGRESSO DE CARGO -->
-    <div class="barra-cargo">
-      <div id="progressoCargo"></div>
-    </div>
+<!-- CARGO + PROGRESSO -->
+<div class="cargo-box">
+  <div id="cargo">Cargo: Operário</div>
+  <div class="barra">
+    <div id="barraCargo" class="fill"></div>
+    <span id="txtCargo">0%</span>
   </div>
-
-  <div id="dia">📅 Dia 1 - Manhã</div>
 </div>
 
-<!-- 📜 HISTÓRICO -->
-<div id="historico"></div>
+<!-- HISTÓRIA -->
+<div id="historico" class="historico"></div>
 
-<!-- 🎮 BOTÕES -->
+<!-- BOTÕES -->
 <div class="acoes">
 
-  <button onclick="trabalhar()" class="btn azul">
-    🔧 Trabalhar
-  </button>
+  <button onclick="trabalhar()">🔧 Trabalhar</button>
+  <button onclick="descansar()">😴 Descansar</button>
 
-  <button onclick="descansar()" class="btn verde">
-    😴 Descansar
-  </button>
+  <div class="linha-centro">
+    <button onclick="arriscar()">🎲 Arriscar</button>
 
-  <button onclick="arriscar()" class="btn laranja">
-    🎲 Arriscar
-  </button>
+    <!-- BOTÃO + -->
+    <button id="btnDia" class="botao-plus" onclick="passarDia()">+</button>
 
-  <button onclick="fabricaClick()" id="btnFabrica" class="btn preto">
-    🏭 Fábrica
-  </button>
-
-</div>
-
-<!-- 📊 STATUS -->
-<div class="status">
-
-  <div class="barra">
-    ⚙️ Eficiência
-    <div class="bg">
-      <div id="eficiencia"></div>
-    </div>
-  </div>
-
-  <div class="barra">
-    ❤️ Saúde
-    <div class="bg">
-      <div id="saude"></div>
-    </div>
-  </div>
-
-  <div class="barra">
-    🙂 Satisfação
-    <div class="bg">
-      <div id="satisfacao"></div>
-    </div>
-  </div>
-
-  <div class="barra">
-    🏭 Fábrica
-    <div class="bg">
-      <div id="fabrica"></div>
-    </div>
+    <button id="btnFabrica" onclick="abrirFabrica()" disabled>🏭 Fábrica</button>
   </div>
 
 </div>
 
-<!-- ⚠️ POPUP (caso queira usar depois no lugar do alert) -->
-<div id="popup" class="popup hidden">
+<!-- BARRAS (AGORA EMBAIXO) -->
+<div class="barras">
+
+  <div class="barra">
+    <span>⚙️ Eficiência</span>
+    <div><div id="eficiencia" class="fill"></div></div>
+  </div>
+
+  <div class="barra">
+    <span>❤️ Saúde</span>
+    <div><div id="saude" class="fill"></div></div>
+  </div>
+
+  <div class="barra">
+    <span>🙂 Satisfação</span>
+    <div><div id="satisfacao" class="fill"></div></div>
+  </div>
+
+  <div class="barra">
+    <span>🏭 Fábrica</span>
+    <div><div id="fabrica" class="fill"></div></div>
+  </div>
+
+</div>
+
+<!-- POP-UP EVENTO -->
+<div id="popupEvento" class="popup hidden">
   <div class="popup-box">
-    <h2 id="popupTitulo"></h2>
-    <p id="popupTexto"></p>
-    <div class="opcoes">
-      <button onclick="escolhaEvento(1)">Opção 1</button>
-      <button onclick="escolhaEvento(2)">Opção 2</button>
+    <h2>⚠ Evento</h2>
+    <p id="eventoTexto"></p>
+
+    <div class="popup-opcoes">
+      <button onclick="resolverEvento()">Resolver</button>
+      <button onclick="ignorarEvento()">Ignorar</button>
     </div>
   </div>
 </div>
 
-<!-- SCRIPT -->
+<!-- POP-UP FÁBRICA -->
+<div id="popupFabrica" class="popup hidden">
+  <div class="popup-box">
+    <h2>🏭 Gestão da Fábrica</h2>
+
+    <button onclick="melhorarMaquinas()">⚙ Melhorar máquinas (💰 200)</button>
+    <button onclick="contratarFuncionarios()">👷 Contratar funcionários (💰 150)</button>
+    <button onclick="marketing()">📢 Investir em marketing (💰 250)</button>
+
+    <br><br>
+    <button onclick="fecharPopup()">Fechar</button>
+  </div>
+</div>
+
+<!-- POP-UP FINAL -->
+<div id="popupFinal" class="popup hidden">
+  <div class="popup-box">
+    <h2 id="finalTitulo"></h2>
+    <p id="finalTexto"></p>
+
+    <button onclick="reiniciarJogo()">Reiniciar</button>
+  </div>
+</div>
+
 <script src="script.js"></script>
 
 </body>
-  </html>
+      </html>
