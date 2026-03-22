@@ -10,56 +10,58 @@
 <body>
 
 <!-- 🔷 TOPO -->
-<header class="topo">
-  <div>🏭 Simulador Taylorista</div>
-  <div id="dinheiro">💰 0</div>
-</header>
+<div class="topo">
+  🏭 Simulador Taylorista
+  <span id="dinheiro">💰 0</span>
+</div>
 
-<!-- 👤 STATUS -->
-<section class="status-topo">
-  <div id="cargo">Operário (0%)</div>
-</section>
+<!-- 📜 HISTÓRICO -->
+<div id="log" class="log"></div>
 
-<!-- 📜 HISTÓRICO CENTRAL -->
-<main id="log" class="log"></main>
+<!-- 🎮 BOTÕES (=+=) -->
+<div class="acoes">
 
-<!-- 📊 BARRAS -->
-<section class="barras">
+  <div class="linha">
+    <button onclick="trabalhar()">🔧 Trabalhar</button>
+    <button onclick="descansar()">😴 Descansar</button>
+  </div>
+
+  <div class="linha-centro">
+    <button onclick="arriscar()">🎲 Arriscar</button>
+
+    <button class="plus" onclick="passarDia()">+</button>
+
+    <button id="btn-fabrica" onclick="abrirFabrica()">🏭 Fábrica</button>
+  </div>
+
+</div>
+
+<!-- 📊 BARRAS (EMBAIXO) -->
+<div class="barras">
+
   <div class="barra">
-    <span>Eficiência</span>
+    <span>⚙️ Eficiência</span>
     <div><div id="eficiencia-bar"></div></div>
   </div>
 
   <div class="barra">
-    <span>Saúde</span>
+    <span>❤️ Saúde</span>
     <div><div id="saude-bar"></div></div>
   </div>
 
   <div class="barra">
-    <span>Satisfação</span>
+    <span>🙂 Satisfação</span>
     <div><div id="satisfacao-bar"></div></div>
   </div>
 
   <div class="barra">
-    <span>Fábrica</span>
+    <span>🏭 Fábrica</span>
     <div><div id="fabrica-bar"></div></div>
   </div>
-</section>
 
-<!-- 🎮 MENU INFERIOR -->
-<footer class="menu">
+</div>
 
-  <button onclick="trabalhar()">🔧</button>
-  <button onclick="descansar()">😴</button>
-
-  <button class="btn-plus" onclick="passarDia()">+</button>
-
-  <button onclick="arriscar()">🎲</button>
-  <button id="btn-fabrica" onclick="abrirFabrica()">🏭</button>
-
-</footer>
-
-<!-- ⚠️ POPUP -->
+<!-- POPUP -->
 <div id="popup" class="popup">
   <div class="popup-box">
     <p id="popup-texto"></p>
@@ -69,6 +71,5 @@
 </div>
 
 <script src="script.js"></script>
-
 </body>
-    </html>
+  </html>
