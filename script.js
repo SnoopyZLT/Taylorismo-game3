@@ -1,300 +1,245 @@
+// ===== ESTADO DO JOGO =====
+let dia = 1;
+let turno = "Manhã";
+let dinheiro = 0;
+
+let eficiencia = 50;
+let saude = 80;
+let satisfacao = 60;
+
+let cargo = "Operário";
+let progressoCargo = 0;
+
+let fabrica = 0;
+let temFabrica = false;
+
+let eventoAtivo = false;
+
 // ===== ELEMENTOS =====
-const historia = document.getElementById("historia");
+const historico = document.getElementById("historico");
+const dinheiroEl = document.getElementById("dinheiro");
+const diaEl = document.getElementById("dia");
+const cargoEl = document.getElementById("cargo");
 
-const eficienciaBar = document.getElementById("eficienciaBar");
-const saudeBar = document.getElementById("saudeBar");
-const satisfacaoBar = document.getElementById("satisfacaoBar");
-const empresaBar = document.getElementById("empresaBar");
-const cargoBar = document.getElementById("cargoBar");
-
-const moneyTxt = document.getElementById("money");
+const eficienciaEl = document.getElementById("eficiencia");
+const saudeEl = document.getElementById("saude");
+const satisfacaoEl = document.getElementById("satisfacao");
+const fabricaEl = document.getElementById("fabrica");
+const progressoCargoEl = document.getElementById("progressoCargo");
 
 const popup = document.getElementById("popup");
 const popupTitulo = document.getElementById("popupTitulo");
 const popupTexto = document.getElementById("popupTexto");
-const popupOpcoes = document.getElementById("popupOpcoes");
 
-// ===== ESTADO =====
-let jogador = {
-  dinheiro: 0,
-  eficiencia: 50,
-  saude: 80,
-  satisfacao: 60,
-  empresa: 0,
-
-  cargo: "Operário",
-  progressoCargo: 0,
-
-  dia: 1,
-  turno: "Manhã",
-
-  temFabrica: false,
-  jogoAcabou: false
-};
-
-// ===== HISTÓRIA (IA) =====
-function narrativaIA() {
-  if (jogador.eficiencia > 80) {
-    return "🔥 Você está se destacando na produção.";
-  }
-  if (jogador.satisfacao < 30) {
-    return "😡 O clima está tenso entre os trabalhadores.";
-  }
-  if (jogador.saude < 30) {
-    return "💀 Você está exausto fisicamente.";
-  }
-  if (jogador.temFabrica) {
-    return "🏭 Sua fábrica está sob sua responsabilidade.";
-  }
-
-  const neutro = [
-    "O trabalho segue normalmente.",
-    "A rotina da fábrica continua.",
-    "O dia foi produtivo.",
-    "Nada fora do comum aconteceu."
+// ===== IA DE TEXTO =====
+function narrativa() {
+  const textos = [
+    "Seu desempenho foi observado.",
+    "A pressão aumentou.",
+    "O trabalho foi intenso.",
+    "A fábrica exigiu mais produtividade.",
+    "Você seguiu o ritmo da produção.",
+    "Supervisores analisaram seu trabalho.",
+    "Você manteve o padrão exigido."
   ];
 
-  return neutro[Math.floor(Math.random() * neutro.length)];
+  return textos[Math.floor(Math.random() * textos.length)];
 }
 
-function addHistoria(txt) {
-  historia.innerHTML =
-    `📅 Dia ${jogador.dia} (${jogador.turno})<br>${txt}<br>${narrativaIA()}<br><br>` +
-    historia.innerHTML;
+// ===== ATUALIZAR HUD =====
+function atualizarHUD() {
+  dinheiroEl.innerText = "💰 " + dinheiro;
+  diaEl.innerText = "📅 Dia " + dia + " - " + turno;
+  cargoEl.innerText = "Cargo: " + cargo;
 
-  historia.scrollTop = 0;
+  eficienciaEl.style.width = eficiencia + "%";
+  eficienciaEl.innerText = eficiencia + "%";
+
+  saudeEl.style.width = saude + "%";
+  saudeEl.innerText = saude + "%";
+
+  satisfacaoEl.style.width = satisfacao + "%";
+  satisfacaoEl.innerText = satisfacao + "%";
+
+  fabricaEl.style.width = fabrica + "%";
+  fabricaEl.innerText = fabrica + "%";
+
+  progressoCargoEl.style.width = progressoCargo + "%";
 }
 
-// ===== BARRAS =====
-function atualizarBarras() {
-  setBar(eficienciaBar, jogador.eficiencia, "⚙ Eficiência");
-  setBar(saudeBar, jogador.saude, "❤️ Saúde");
-  setBar(satisfacaoBar, jogador.satisfacao, "🙂 Satisfação");
+// ===== HISTÓRICO =====
+function log(texto) {
+  historico.innerHTML = "📌 " + texto + "<br>" + historico.innerHTML;
+  historico.scrollTop = 0;
+}
 
-  if (jogador.temFabrica) {
-    setBar(empresaBar, jogador.empresa, "🏭 Fábrica");
-    empresaBar.style.background = "#4169E1";
+// ===== TURNO =====
+function proximoTurno() {
+  if (turno === "Manhã") {
+    turno = "Tarde";
   } else {
-    empresaBar.style.width = "100%";
-    empresaBar.innerText = "Fábrica BLOQUEADA";
-    empresaBar.style.background = "black";
+    turno = "Manhã";
+    dia++;
+
+    if (dia % 3 === 0) gerarEvento();
   }
 
-  cargoBar.style.width = jogador.progressoCargo + "%";
-  cargoBar.innerText = `Cargo: ${jogador.cargo} (${jogador.progressoCargo}%)`;
+  verificarPromocao();
+  verificarFinal();
 
-  moneyTxt.innerText = "💰 " + jogador.dinheiro;
+  log(narrativa());
+  atualizarHUD();
 }
-
-function setBar(el, valor, nome) {
-  valor = Math.max(0, Math.min(100, valor));
-  el.style.width = valor + "%";
-  el.innerText = `${nome} (${valor}%)`;
-}
-
-// ===== POPUP REAL =====
-function mostrarPopup(titulo, texto, opcoes) {
-  popup.classList.remove("hidden");
-
-  popupTitulo.innerText = titulo;
-  popupTexto.innerText = texto;
-  popupOpcoes.innerHTML = "";
-
-  opcoes.forEach(op => {
-    const btn = document.createElement("button");
-    btn.innerText = op.texto + (op.efeito ? ` (${op.efeito})` : "");
-
-    btn.onclick = () => {
-      popup.classList.add("hidden");
-      op.acao();
-    };
-
-    popupOpcoes.appendChild(btn);
-  });
-}
-
-// ===== EVENTOS =====
-function gerarEvento() {
-  if (jogador.dia % 3 !== 0 || jogador.turno !== "Manhã") return;
-
-  mostrarPopup("⚠ Evento", "Algo aconteceu na fábrica!", [
-    {
-      texto: "Resolver",
-      efeito: "+Eficiência -Saúde",
-      acao: () => {
-        jogador.eficiencia += 10;
-        jogador.saude -= 5;
-        avancarTurno("Você resolveu o problema.");
-      }
-    },
-    {
-      texto: "Ignorar",
-      efeito: "-Satisfação",
-      acao: () => {
-        jogador.satisfacao -= 10;
-        avancarTurno("Você ignorou o problema.");
-      }
-    }
-  ]);
-}
-
-// ===== BOTÕES =====
-function atualizarBotoes() {
-  const esq = document.getElementById("opcoes-esquerda");
-  const dir = document.getElementById("opcoes-direita");
-
-  esq.innerHTML = "";
-  dir.innerHTML = "";
-
-  criarBotao(esq, "Trabalhar", trabalhar);
-  criarBotao(esq, "Arriscar", arriscar);
-
-  criarBotao(dir, "Descansar", descansar);
-
-  const btnF = document.createElement("button");
-  btnF.innerText = "Fábrica";
-  btnF.onclick = abrirFabrica;
-
-  if (!jogador.temFabrica) {
-    btnF.style.background = "black";
-    btnF.disabled = true;
-  }
-
-  dir.appendChild(btnF);
-}
-
-function criarBotao(container, txt, acao) {
-  const b = document.createElement("button");
-  b.innerText = txt;
-  b.onclick = acao;
-  container.appendChild(b);
-}
-
-// ===== BOTÃO + =====
-document.querySelector(".botao-centro").onclick = () => {
-  avancarTurno("⏩ Tempo avançou.");
-};
 
 // ===== AÇÕES =====
 function trabalhar() {
-  jogador.dinheiro += salario();
-  jogador.eficiencia += 5;
-  jogador.saude -= 3;
+  dinheiro += salario();
+  eficiencia += 5;
+  saude -= 5;
+  progressoCargo += 10;
 
-  progressoCargo(10);
-
-  avancarTurno("Você trabalhou.");
+  log("Você trabalhou.");
+  proximoTurno();
 }
 
 function descansar() {
-  jogador.saude += 10;
-  jogador.satisfacao += 5;
+  saude += 10;
+  satisfacao += 5;
+  eficiencia -= 3;
 
-  avancarTurno("Você descansou.");
+  log("Você descansou.");
+  proximoTurno();
 }
 
 function arriscar() {
   if (Math.random() > 0.5) {
-    jogador.dinheiro += 100;
-    jogador.eficiencia += 5;
-    avancarTurno("🔥 Deu certo!");
+    dinheiro += 100;
+    log("Você teve sorte!");
   } else {
-    jogador.dinheiro -= 50;
-    jogador.saude -= 5;
-    avancarTurno("💥 Deu ruim!");
+    saude -= 10;
+    log("Deu errado...");
   }
-}
-
-// ===== FÁBRICA =====
-function abrirFabrica() {
-  if (!jogador.temFabrica) return;
-
-  mostrarPopup("🏭 Fábrica", "Escolha uma melhoria:", [
-    {
-      texto: "Investir",
-      efeito: "+10 fábrica (-50💰)",
-      acao: () => {
-        if (jogador.dinheiro < 50) return;
-        jogador.dinheiro -= 50;
-        jogador.empresa += 10;
-        avancarTurno("Você investiu na fábrica.");
-      }
-    },
-    {
-      texto: "Treinar equipe",
-      efeito: "+10 eficiência (-40💰)",
-      acao: () => {
-        if (jogador.dinheiro < 40) return;
-        jogador.dinheiro -= 40;
-        jogador.eficiencia += 10;
-        avancarTurno("Equipe treinada.");
-      }
-    }
-  ]);
+  proximoTurno();
 }
 
 // ===== SALÁRIO =====
 function salario() {
-  if (jogador.cargo === "Operário") return 20;
-  if (jogador.cargo === "Supervisor") return 50;
-  if (jogador.cargo === "Gerente") return 100;
+  if (cargo === "Operário") return 20;
+  if (cargo === "Supervisor") return 50;
+  if (cargo === "Gerente") return 100;
 }
 
 // ===== PROMOÇÃO =====
-function progressoCargo(valor) {
-  jogador.progressoCargo += valor;
+function verificarPromocao() {
+  if (progressoCargo >= 100) {
+    progressoCargo = 0;
 
-  if (jogador.progressoCargo >= 100) {
-    jogador.progressoCargo = 0;
-
-    if (jogador.cargo === "Operário") {
-      jogador.cargo = "Supervisor";
-      addHistoria("📈 Promoção: Supervisor!");
-    } else if (jogador.cargo === "Supervisor") {
-      jogador.cargo = "Gerente";
-      jogador.temFabrica = true;
-      addHistoria("🏢 Você virou gerente e ganhou uma fábrica!");
+    if (cargo === "Operário") {
+      cargo = "Supervisor";
+      log("🎉 Promoção: Supervisor!");
+    } else if (cargo === "Supervisor") {
+      cargo = "Gerente";
+      log("🎉 Promoção: Gerente!");
+      liberarFabrica();
     }
   }
 }
 
-// ===== TURNOS =====
-function avancarTurno(msg) {
-  if (jogador.jogoAcabou) return;
+// ===== FÁBRICA =====
+function liberarFabrica() {
+  temFabrica = true;
+  document.getElementById("btnFabrica").classList.remove("bloqueado");
 
-  if (msg) addHistoria(msg);
+  log("🏭 Você ganhou uma fábrica!");
+}
 
-  if (jogador.turno === "Manhã") {
-    jogador.turno = "Tarde";
-  } else {
-    jogador.turno = "Manhã";
-    jogador.dia++;
-  }
+document.getElementById("btnFabrica").onclick = () => {
+  if (!temFabrica) return;
 
-  gerarEvento();
+  popupTitulo.innerText = "🏭 Gerenciar Fábrica";
+  popupTexto.innerText =
+    "Investir (R$200) → +20% sucesso\n\nExpandir (R$300) → +30% sucesso";
 
-  checarFinais();
+  popup.classList.remove("hidden");
 
-  atualizarBarras();
-  atualizarBotoes();
+  window.escolhaEvento = (op) => {
+    if (op === 1 && dinheiro >= 200) {
+      dinheiro -= 200;
+      fabrica += 20;
+      log("Você investiu na fábrica.");
+    } else if (op === 2 && dinheiro >= 300) {
+      dinheiro -= 300;
+      fabrica += 30;
+      log("Você expandiu a fábrica.");
+    }
+
+    popup.classList.add("hidden");
+    atualizarHUD();
+  };
+};
+
+// ===== EVENTOS =====
+function gerarEvento() {
+  eventoAtivo = true;
+
+  const eventos = [
+    {
+      titulo: "⚠️ Máquina quebrada",
+      texto: "Consertar (-50 💰, +Eficiência) ou Ignorar (-Eficiência)",
+      escolha1: () => {
+        dinheiro -= 50;
+        eficiencia += 10;
+      },
+      escolha2: () => {
+        eficiencia -= 10;
+      }
+    },
+    {
+      titulo: "⚠️ Greve",
+      texto: "Negociar (-💰, +Satisfação) ou Reprimir (-Satisfação)",
+      escolha1: () => {
+        dinheiro -= 80;
+        satisfacao += 10;
+      },
+      escolha2: () => {
+        satisfacao -= 15;
+      }
+    }
+  ];
+
+  const e = eventos[Math.floor(Math.random() * eventos.length)];
+
+  popupTitulo.innerText = e.titulo;
+  popupTexto.innerText = e.texto;
+  popup.classList.remove("hidden");
+
+  window.escolhaEvento = (op) => {
+    if (op === 1) e.escolha1();
+    else e.escolha2();
+
+    popup.classList.add("hidden");
+    eventoAtivo = false;
+
+    log(e.titulo);
+    atualizarHUD();
+  };
 }
 
 // ===== FINAIS =====
-function checarFinais() {
-  if (jogador.empresa >= 100 && !jogador.jogoAcabou) {
-    jogador.jogoAcabou = true;
-
-    mostrarPopup("🏆 Vitória", "Você construiu uma fábrica de sucesso!", []);
+function verificarFinal() {
+  if (fabrica >= 100) {
+    popupTitulo.innerText = "🏆 FINAL BOM";
+    popupTexto.innerText = "Você construiu uma fábrica de sucesso!";
+    popup.classList.remove("hidden");
   }
 
-  if (jogador.satisfacao <= 0 && !jogador.jogoAcabou) {
-    jogador.jogoAcabou = true;
-
-    mostrarPopup("💀 Derrota", "Você foi demitido.", []);
+  if (satisfacao <= 0 || eficiencia <= 0) {
+    popupTitulo.innerText = "💀 FINAL RUIM";
+    popupTexto.innerText = "Você foi demitido.";
+    popup.classList.remove("hidden");
   }
 }
 
-// ===== START =====
-addHistoria("Você começou como operário.");
-atualizarBarras();
-atualizarBotoes();
+// ===== INICIAR =====
+atualizarHUD();
+log("Você começou como operário.");
