@@ -1,4 +1,3 @@
-/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -19,12 +18,17 @@ body {
   padding: 12px;
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+}
+
+/* CARGO */
+.cargo-box {
+  padding: 10px;
+  background: #111827;
 }
 
 /* HISTÓRICO */
 .log {
-  height: 220px;
+  height: 200px;
   overflow-y: auto;
   background: #e5e7eb;
   color: black;
@@ -36,7 +40,6 @@ body {
   padding: 10px;
 }
 
-/* LINHA 1 */
 .linha {
   display: flex;
   gap: 10px;
@@ -46,7 +49,6 @@ body {
   flex: 1;
 }
 
-/* LINHA CENTRAL (=+=) */
 .linha-centro {
   display: flex;
   justify-content: center;
@@ -59,16 +61,6 @@ body {
   width: 30%;
 }
 
-/* BOTÃO + */
-.plus {
-  width: 60px !important;
-  height: 60px;
-  border-radius: 50%;
-  font-size: 26px;
-  background: #2563eb;
-}
-
-/* BOTÕES GERAIS */
 button {
   padding: 12px;
   border-radius: 12px;
@@ -77,12 +69,18 @@ button {
   font-weight: bold;
 }
 
-/* CORES */
 .linha button:nth-child(1) { background: #2563eb; }
 .linha button:nth-child(2) { background: #16a34a; }
-
 .linha-centro button:nth-child(1) { background: #f97316; }
 .linha-centro button:nth-child(3) { background: black; }
+
+.plus {
+  width: 60px !important;
+  height: 60px;
+  border-radius: 50%;
+  background: #2563eb;
+  font-size: 24px;
+}
 
 /* BARRAS */
 .barras {
@@ -93,11 +91,7 @@ button {
   margin-bottom: 12px;
 }
 
-.barra span {
-  font-size: 13px;
-}
-
-.barra div {
+.bg {
   width: 100%;
   height: 18px;
   background: #374151;
@@ -106,9 +100,13 @@ button {
   border: 2px solid black;
 }
 
-.barra div div {
+.fill {
   height: 100%;
+  width: 50%;
   background: linear-gradient(90deg,#3b82f6,#60a5fa);
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 /* POPUP */
@@ -127,5 +125,4 @@ button {
   margin: 50% auto;
   width: 80%;
   border-radius: 15px;
-  text-align: center;
-  }
+}
