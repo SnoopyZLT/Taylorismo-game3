@@ -1,140 +1,168 @@
-// ===== ESTADO =====
+// ===== ESTADO DO JOGO =====
 let dia = 1;
 let turno = "Manhã";
 
 let dinheiro = 0;
-let eficiencia = 50;
-let saude = 80;
-let satisfacao = 60;
-
 let cargo = "Operário";
 let progressoCargo = 0;
 
+let eficiencia = 50;
+let saude = 80;
+let satisfacao = 60;
 let fabrica = 0;
-let temFabrica = false;
+
+let fabricaDesbloqueada = false;
 
 // ===== ELEMENTOS =====
+const historico = document.getElementById("historico");
 const dinheiroEl = document.getElementById("dinheiro");
-const diaEl = document.getElementById("dia");
 const cargoEl = document.getElementById("cargo");
+const barraCargo = document.getElementById("barraCargo");
 
 const eficienciaEl = document.getElementById("eficiencia");
 const saudeEl = document.getElementById("saude");
 const satisfacaoEl = document.getElementById("satisfacao");
 const fabricaEl = document.getElementById("fabrica");
 
-const progressoCargoEl = document.getElementById("progressoCargo");
+const btnFabrica = document.getElementById("btnFabrica");
 
-const historico = document.getElementById("historico");
+// ===== INICIO =====
+log("📌 Você começou como operário.");
+updateUI();
 
-// ===== LOG =====
-function log(msg) {
-  if (!historico) return;
-  historico.innerHTML = "📌 " + msg + "<br>" + historico.innerHTML;
+// ===== FUNÇÕES PRINCIPAIS =====
+
+function trabalhar() {
+  let ganho = getSalario();
+  dinheiro += ganho;
+  eficiencia += rand(3,7);
+  saude -= rand(2,5);
+  satisfacao -= rand(1,4);
+  progressoCargo += rand(5,10);
+
+  log(`🔧 Você trabalhou e ganhou 💰 ${ganho}.`);
+  updateUI();
 }
 
-// ===== IA =====
-function narrativa() {
-  const frases = [
-    "Seu desempenho foi observado.",
-    "A pressão aumentou.",
-    "O trabalho foi intenso.",
-    "A fábrica exigiu mais produtividade.",
-    "Você manteve o ritmo da produção."
-  ];
-  return frases[Math.floor(Math.random() * frases.length)];
+function descansar() {
+  saude += rand(5,10);
+  satisfacao += rand(3,6);
+  eficiencia -= rand(2,4);
+
+  log("😴 Você descansou.");
+  updateUI();
 }
 
-// ===== HUD =====
-function atualizarHUD() {
-  if (dinheiroEl) dinheiroEl.innerText = "💰 " + dinheiro;
-  if (diaEl) diaEl.innerText = "📅 Dia " + dia + " - " + turno;
-  if (cargoEl) cargoEl.innerText = "Cargo: " + cargo;
-
-  if (eficienciaEl) {
-    eficienciaEl.style.width = eficiencia + "%";
-    eficienciaEl.innerText = eficiencia + "%";
+function arriscar() {
+  if (Math.random() > 0.5) {
+    dinheiro += 50;
+    satisfacao += 5;
+    log("🎲 Deu certo! Você ganhou dinheiro.");
+  } else {
+    dinheiro -= 30;
+    saude -= 5;
+    log("💥 Deu errado! Você perdeu dinheiro.");
   }
-
-  if (saudeEl) {
-    saudeEl.style.width = saude + "%";
-    saudeEl.innerText = saude + "%";
-  }
-
-  if (satisfacaoEl) {
-    satisfacaoEl.style.width = satisfacao + "%";
-    satisfacaoEl.innerText = satisfacao + "%";
-  }
-
-  if (fabricaEl) {
-    fabricaEl.style.width = fabrica + "%";
-    fabricaEl.innerText = fabrica + "%";
-  }
-
-  if (progressoCargoEl) {
-    progressoCargoEl.style.width = progressoCargo + "%";
-  }
+  updateUI();
 }
 
-// ===== TURNO =====
-function proximoTurno() {
+function passarDia() {
   if (turno === "Manhã") {
     turno = "Tarde";
   } else {
     turno = "Manhã";
     dia++;
 
-    if (dia % 3 === 0) evento();
+    if (dia % 3 === 0) gerarEvento();
   }
 
-  verificarPromocao();
-  verificarFinal();
+  narrativaIA();
+  checarPromocao();
+  checarFinal();
 
-  log(narrativa());
-  atualizarHUD();
+  updateUI();
 }
 
-// ===== SALÁRIO =====
-function salario() {
-  if (cargo === "Operário") return 20;
-  if (cargo === "Supervisor") return 50;
-  if (cargo === "Gerente") return 100;
+// ===== IA NARRATIVA =====
+function narrativaIA() {
+  let frases = [
+    "O ritmo da fábrica aumentou.",
+    "Supervisores observaram seu desempenho.",
+    "O trabalho foi intenso.",
+    "Nada fora do comum aconteceu.",
+    "Os trabalhadores reclamaram da pressão."
+  ];
+
+  log(`📅 Dia ${dia} (${turno})`);
+  log(frases[rand(0, frases.length-1)]);
 }
 
-// ===== AÇÕES =====
-window.trabalhar = function () {
-  dinheiro += salario();
+// ===== EVENTOS =====
+function gerarEvento() {
+  let eventos = [
+    "Uma máquina quebrou!",
+    "Funcionários estão insatisfeitos!",
+    "A produção caiu!",
+    "Greve pode acontecer!"
+  ];
+
+  document.getElementById("popupEvento").classList.remove("hidden");
+  document.getElementById("eventoTexto").innerText = eventos[rand(0,3)];
+}
+
+function resolverEvento() {
   eficiencia += 5;
-  saude -= 5;
-  progressoCargo += 10;
-
-  log("Você trabalhou.");
-  proximoTurno();
-};
-
-window.descansar = function () {
-  saude += 10;
   satisfacao += 5;
-  eficiencia -= 3;
+  dinheiro -= 20;
+  log("✅ Você resolveu o problema.");
+  fecharPopup();
+  updateUI();
+}
 
-  log("Você descansou.");
-  proximoTurno();
-};
+function ignorarEvento() {
+  eficiencia -= 5;
+  satisfacao -= 5;
+  log("❌ Você ignorou o problema.");
+  fecharPopup();
+  updateUI();
+}
 
-window.arriscar = function () {
-  if (Math.random() > 0.5) {
-    dinheiro += 100;
-    log("Você ganhou dinheiro!");
-  } else {
-    saude -= 10;
-    log("Você se deu mal!");
+// ===== FÁBRICA =====
+function abrirFabrica() {
+  if (!fabricaDesbloqueada) return;
+
+  document.getElementById("popupFabrica").classList.remove("hidden");
+}
+
+function melhorarMaquinas() {
+  if (dinheiro >= 200) {
+    dinheiro -= 200;
+    fabrica += 10;
+    log("⚙ Máquinas melhoradas!");
   }
+  updateUI();
+}
 
-  proximoTurno();
-};
+function contratarFuncionarios() {
+  if (dinheiro >= 150) {
+    dinheiro -= 150;
+    fabrica += 8;
+    log("👷 Funcionários contratados!");
+  }
+  updateUI();
+}
+
+function marketing() {
+  if (dinheiro >= 250) {
+    dinheiro -= 250;
+    fabrica += 12;
+    log("📢 Marketing feito!");
+  }
+  updateUI();
+}
 
 // ===== PROMOÇÃO =====
-function verificarPromocao() {
+function checarPromocao() {
   if (progressoCargo >= 100) {
     progressoCargo = 0;
 
@@ -143,89 +171,76 @@ function verificarPromocao() {
       log("🎉 Promoção: Supervisor!");
     } else if (cargo === "Supervisor") {
       cargo = "Gerente";
-      log("🎉 Promoção: Gerente!");
-      liberarFabrica();
+      log("🏆 Promoção: Gerente!");
+      desbloquearFabrica();
     }
   }
 }
 
-// ===== FÁBRICA =====
-function liberarFabrica() {
-  temFabrica = true;
-  log("🏭 Você desbloqueou a fábrica!");
-}
-
-window.fabricaClick = function () {
-  if (!temFabrica) {
-    alert("Fábrica bloqueada! Chegue a Gerente.");
-    return;
-  }
-
-  let escolha = prompt(
-    "1 - Investir (200) [+20%]\n2 - Expandir (300) [+30%]"
-  );
-
-  if (escolha == 1 && dinheiro >= 200) {
-    dinheiro -= 200;
-    fabrica += 20;
-    log("Você investiu na fábrica.");
-  } else if (escolha == 2 && dinheiro >= 300) {
-    dinheiro -= 300;
-    fabrica += 30;
-    log("Você expandiu a fábrica.");
-  } else {
-    log("Dinheiro insuficiente.");
-  }
-
-  atualizarHUD();
-};
-
-// ===== EVENTOS =====
-function evento() {
-  const tipo = Math.random();
-
-  if (tipo < 0.5) {
-    let escolha = confirm(
-      "⚠️ Máquina quebrou!\nOK = Consertar (-50 +Eficiência)\nCancelar = Ignorar (-Eficiência)"
-    );
-
-    if (escolha) {
-      dinheiro -= 50;
-      eficiencia += 10;
-      log("Você consertou a máquina.");
-    } else {
-      eficiencia -= 10;
-      log("Você ignorou o problema.");
-    }
-  } else {
-    let escolha = confirm(
-      "⚠️ Greve!\nOK = Negociar (-80 +Satisfação)\nCancelar = Reprimir (-Satisfação)"
-    );
-
-    if (escolha) {
-      dinheiro -= 80;
-      satisfacao += 10;
-      log("Você negociou.");
-    } else {
-      satisfacao -= 15;
-      log("Você reprimiu a greve.");
-    }
-  }
+function desbloquearFabrica() {
+  fabricaDesbloqueada = true;
+  btnFabrica.disabled = false;
+  btnFabrica.style.background = "#2f5fd0";
+  log("🏭 Você ganhou acesso à fábrica!");
 }
 
 // ===== FINAIS =====
-function verificarFinal() {
+function checarFinal() {
   if (fabrica >= 100) {
-    alert("🏆 FINAL BOM: Você criou uma fábrica de sucesso!");
-    location.reload();
+    mostrarFinal("🏆 FINAL BOM", "Você construiu uma fábrica de sucesso!");
   }
 
-  if (satisfacao <= 0 || eficiencia <= 0) {
-    alert("💀 FINAL RUIM: Você foi demitido!");
-    location.reload();
+  if (satisfacao <= 0 || saude <= 0) {
+    mostrarFinal("💀 FINAL RUIM", "Você foi demitido.");
   }
 }
 
-// ===== START =====
-atualizarHUD();
-log("Você começou como operário.");
+function mostrarFinal(titulo, texto) {
+  document.getElementById("popupFinal").classList.remove("hidden");
+  document.getElementById("finalTitulo").innerText = titulo;
+  document.getElementById("finalTexto").innerText = texto;
+}
+
+function reiniciarJogo() {
+  location.reload();
+}
+
+// ===== UTIL =====
+function fecharPopup() {
+  document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+}
+
+function log(msg) {
+  historico.innerHTML = msg + "<br>" + historico.innerHTML;
+}
+
+function updateUI() {
+  dinheiroEl.innerText = "💰 " + dinheiro;
+  cargoEl.innerText = "Cargo: " + cargo;
+
+  barraCargo.style.width = progressoCargo + "%";
+
+  eficienciaEl.style.width = eficiencia + "%";
+  saudeEl.style.width = saude + "%";
+  satisfacaoEl.style.width = satisfacao + "%";
+  fabricaEl.style.width = fabrica + "%";
+
+  // Limites
+  eficiencia = clamp(eficiencia);
+  saude = clamp(saude);
+  satisfacao = clamp(satisfacao);
+}
+
+function clamp(v) {
+  return Math.max(0, Math.min(100, v));
+}
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getSalario() {
+  if (cargo === "Operário") return 20;
+  if (cargo === "Supervisor") return 50;
+  if (cargo === "Gerente") return 100;
+}
