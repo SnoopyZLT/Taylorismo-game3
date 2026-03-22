@@ -9,16 +9,25 @@
 
 <body>
 
-<!-- 🔷 TOPO -->
+<!-- TOPO -->
 <div class="topo">
   🏭 Simulador Taylorista
   <span id="dinheiro">💰 0</span>
 </div>
 
-<!-- 📜 HISTÓRICO -->
+<!-- CARGO -->
+<div class="cargo-box">
+  <span id="cargo">Cargo: Operário</span>
+  <div class="barra">
+    <div id="barraCargo" class="fill"></div>
+    <span id="txtCargo">0%</span>
+  </div>
+</div>
+
+<!-- HISTÓRICO -->
 <div id="log" class="log"></div>
 
-<!-- 🎮 BOTÕES (=+=) -->
+<!-- BOTÕES -->
 <div class="acoes">
 
   <div class="linha">
@@ -36,27 +45,27 @@
 
 </div>
 
-<!-- 📊 BARRAS (EMBAIXO) -->
+<!-- BARRAS -->
 <div class="barras">
 
   <div class="barra">
     <span>⚙️ Eficiência</span>
-    <div><div id="eficiencia-bar"></div></div>
+    <div class="bg"><div id="eficiencia-bar" class="fill"></div></div>
   </div>
 
   <div class="barra">
     <span>❤️ Saúde</span>
-    <div><div id="saude-bar"></div></div>
+    <div class="bg"><div id="saude-bar" class="fill"></div></div>
   </div>
 
   <div class="barra">
     <span>🙂 Satisfação</span>
-    <div><div id="satisfacao-bar"></div></div>
+    <div class="bg"><div id="satisfacao-bar" class="fill"></div></div>
   </div>
 
   <div class="barra">
     <span>🏭 Fábrica</span>
-    <div><div id="fabrica-bar"></div></div>
+    <div class="bg"><div id="fabrica-bar" class="fill"></div></div>
   </div>
 
 </div>
@@ -72,4 +81,4 @@
 
 <script src="script.js"></script>
 </body>
-  </html>
+                                                               </html>
