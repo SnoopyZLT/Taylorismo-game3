@@ -9,67 +9,66 @@
 
 <body>
 
-<!-- TOPO -->
-<div class="topo">
-    🏭 Simulador Taylorista
-    <span id="dinheiro">💰 0</span>
-</div>
+<!-- 🔷 TOPO -->
+<header class="topo">
+  <div>🏭 Simulador Taylorista</div>
+  <div id="dinheiro">💰 0</div>
+</header>
 
-<div class="cargo">
-    <span id="cargo">Cargo: Operário (0%)</span>
-</div>
+<!-- 👤 STATUS -->
+<section class="status-topo">
+  <div id="cargo">Operário (0%)</div>
+</section>
 
-<!-- HISTÓRICO -->
-<div id="log" class="log"></div>
+<!-- 📜 HISTÓRICO CENTRAL -->
+<main id="log" class="log"></main>
 
-<!-- BOTÕES -->
-<div class="acoes">
-    <button onclick="trabalhar()">🔧 Trabalhar</button>
-    <button onclick="descansar()">😴 Descansar</button>
-</div>
+<!-- 📊 BARRAS -->
+<section class="barras">
+  <div class="barra">
+    <span>Eficiência</span>
+    <div><div id="eficiencia-bar"></div></div>
+  </div>
 
-<div class="acoes">
-    <button onclick="arriscar()">🎲 Arriscar</button>
-    <button id="btn-fabrica" onclick="abrirFabrica()">🏭 Fábrica</button>
-</div>
+  <div class="barra">
+    <span>Saúde</span>
+    <div><div id="saude-bar"></div></div>
+  </div>
 
-<!-- BOTÃO + -->
-<div class="center">
-    <button class="btn-plus" onclick="passarDia()">+</button>
-</div>
+  <div class="barra">
+    <span>Satisfação</span>
+    <div><div id="satisfacao-bar"></div></div>
+  </div>
 
-<!-- BARRAS -->
-<div class="barras">
-    <div class="barra">
-        <div id="eficiencia-bar">50%</div>
-        <span>⚙️ Eficiência</span>
-    </div>
+  <div class="barra">
+    <span>Fábrica</span>
+    <div><div id="fabrica-bar"></div></div>
+  </div>
+</section>
 
-    <div class="barra">
-        <div id="saude-bar">80%</div>
-        <span>❤️ Saúde</span>
-    </div>
+<!-- 🎮 MENU INFERIOR -->
+<footer class="menu">
 
-    <div class="barra">
-        <div id="satisfacao-bar">60%</div>
-        <span>🙂 Satisfação</span>
-    </div>
+  <button onclick="trabalhar()">🔧</button>
+  <button onclick="descansar()">😴</button>
 
-    <div class="barra">
-        <div id="fabrica-bar">0%</div>
-        <span>🏭 Fábrica</span>
-    </div>
-</div>
+  <button class="btn-plus" onclick="passarDia()">+</button>
 
-<!-- POPUP -->
+  <button onclick="arriscar()">🎲</button>
+  <button id="btn-fabrica" onclick="abrirFabrica()">🏭</button>
+
+</footer>
+
+<!-- ⚠️ POPUP -->
 <div id="popup" class="popup">
-    <div class="popup-box">
-        <p id="popup-texto"></p>
-        <button id="btn1"></button>
-        <button id="btn2"></button>
-    </div>
+  <div class="popup-box">
+    <p id="popup-texto"></p>
+    <button id="btn1"></button>
+    <button id="btn2"></button>
+  </div>
 </div>
 
 <script src="script.js"></script>
+
 </body>
-</html>
+    </html>
