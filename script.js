@@ -5,9 +5,9 @@ let dinheiro = 0;
 let cargo = "Operário";
 let progresso = 0;
 
-let eficiencia = 50;
+let eficiencia = 15;
 let saude = 80;
-let satisfacao = 60;
+let satisfacao = 20;
 let fabrica = 0;
 
 let temFabrica = false;
