@@ -1,6 +1,9 @@
 let dinheiro = 0;
 let dia = 1;
 
+let turno = 0; // 0 = manhã, 1 = tarde
+let turnosTotais = 0;
+
 let eficiencia = 10;
 let saude = 80;
 let satisfacao = 10;
@@ -9,91 +12,113 @@ let progressoCargo = 0;
 
 let cargo = "Operário";
 
-/* ATUALIZA UI */
+/* ===== UI ===== */
 function atualizarUI() {
   document.getElementById("money").innerText = "💰 " + dinheiro;
-  document.getElementById("cargo").innerText = cargo;
+  document.getElementById("cargo").innerText =
+    `${cargo} | ${nomeTurno()}`;
 
   setBar("eficiencia", eficiencia);
   setBar("saude", saude);
   setBar("satisfacao", satisfacao);
   setBar("fabricaBar", fabrica);
   setBar("barraCargo", progressoCargo);
+}
 
-  if (cargo === "Gerente") {
-    document.getElementById("btnFabrica").disabled = false;
+/* ===== TURNOS ===== */
+function nomeTurno() {
+  return turno === 0 ? "Manhã" : "Tarde";
+}
+
+function usarTurno() {
+  if (turno >= 2) {
+    log("⚠️ Você já usou todos os turnos do dia!");
+    return false;
   }
-}
 
-/* BARRAS */
-function setBar(id, valor) {
-  valor = Math.max(0, Math.min(100, valor));
-  document.getElementById(id).style.width = valor + "%";
-}
+  turno++;
+  turnosTotais++;
 
-/* LOG */
-function log(texto) {
-  const logDiv = document.getElementById("log");
-  logDiv.innerHTML = "📅 Dia " + dia + ": " + texto + "<br>" + logDiv.innerHTML;
-}
-
-/* SISTEMA DE TURNO */
-function avancarTurno() {
-  dia++;
-
-  if (dia % 3 === 0) {
+  // 🔥 EVENTO INTELIGENTE
+  if (turnosTotais % 4 === 0 || Math.random() < 0.2) {
     evento();
   }
 
-  if (progressoCargo >= 100) {
-    promover();
-  }
+  return true;
+}
 
+function verificarFimDoDia() {
+  if (turno >= 2) {
+    avancarDia();
+  }
+}
+
+function avancarDia() {
+  dia++;
+  turno = 0;
+
+  log("🌙 Um novo dia começou.");
   atualizarUI();
 }
 
-/* AÇÕES (AGORA FUNCIONAM NA HORA) */
-
+/* ===== AÇÕES ===== */
 function trabalhar() {
+  if (!usarTurno()) return;
+
   dinheiro += getSalario();
   eficiencia += 5;
   progressoCargo += 10;
 
-  log("Você trabalhou.");
+  log("🔧 Você trabalhou.");
   atualizarUI();
+
+  verificarFimDoDia();
 }
 
 function descansar() {
+  if (!usarTurno()) return;
+
   saude += 10;
   satisfacao += 5;
   dinheiro -= 3;
 
-  log("Você descansou.");
+  log("😴 Você descansou.");
   atualizarUI();
+
+  verificarFimDoDia();
 }
 
 function arriscar() {
+  if (!usarTurno()) return;
+
   if (Math.random() > 0.5) {
     eficiencia += 10;
-    log("Você arriscou e ganhou produtividade.");
+    log("🎲 Você teve sorte!");
   } else {
     eficiencia -= 10;
-    log("Você arriscou e perdeu eficiência.");
+    log("💥 Deu ruim!");
   }
 
   atualizarUI();
+  verificarFimDoDia();
 }
 
-/* BOTÃO + (AGORA FUNCIONA CERTO) */
+/* ===== BOTÃO + ===== */
 function passarDia() {
-  avancarTurno();
+  if (turno === 1) {
+    log("⚠️ Não pode pular no meio do dia!");
+    return;
+  }
+
+  turno = 2;
+  avancarDia();
 }
 
-/* EVENTO */
+/* ===== EVENTO ===== */
 function evento() {
   mostrarPopup(
-    "⚠️ Problema na fábrica!",
-    "Uma situação inesperada ocorreu.",
+    "⚠️ Evento!",
+    "Um problema ocorreu na fábrica!",
     {
       texto: "Resolver (-10 +Eficiência)",
       acao: () => {
@@ -114,8 +139,10 @@ function evento() {
   );
 }
 
-/* PROMOÇÃO */
+/* ===== PROMOÇÃO ===== */
 function promover() {
+  if (progressoCargo < 100) return;
+
   progressoCargo = 0;
 
   if (cargo === "Operário") cargo = "Supervisor";
@@ -124,7 +151,7 @@ function promover() {
   log("🎉 Promoção para " + cargo + "!");
 }
 
-/* SALÁRIO */
+/* ===== SALÁRIO ===== */
 function getSalario() {
   if (cargo === "Operário") return 3;
   if (cargo === "Supervisor") return 6;
@@ -132,7 +159,20 @@ function getSalario() {
   return 0;
 }
 
-/* POPUP */
+/* ===== BARRAS ===== */
+function setBar(id, valor) {
+  valor = Math.max(0, Math.min(100, valor));
+  document.getElementById(id).style.width = valor + "%";
+}
+
+/* ===== LOG ===== */
+function log(texto) {
+  const logDiv = document.getElementById("log");
+  logDiv.innerHTML =
+    `📅 Dia ${dia} (${nomeTurno()}): ${texto}<br>` + logDiv.innerHTML;
+}
+
+/* ===== POPUP ===== */
 function mostrarPopup(titulo, texto, op1, op2) {
   document.getElementById("popupOverlay").style.display = "flex";
 
@@ -160,7 +200,7 @@ function fecharPopup() {
   document.getElementById("popupOverlay").style.display = "none";
 }
 
-/* FÁBRICA */
+/* ===== FÁBRICA ===== */
 function abrirFabrica() {
   mostrarPopup(
     "🏭 Fábrica",
@@ -181,5 +221,5 @@ function abrirFabrica() {
   );
 }
 
-/* INICIO */
+/* START */
 atualizarUI();
