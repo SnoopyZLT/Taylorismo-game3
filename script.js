@@ -1,16 +1,17 @@
 let dinheiro = 0;
 let dia = 1;
 
-let turno = 0; // 0 = manhã, 1 = tarde
+let turno = 0;
 let turnosTotais = 0;
 
-let eficiencia = 10;
+let eficiencia = 50;
 let saude = 80;
-let satisfacao = 10;
+let satisfacao = 60;
 let fabrica = 0;
 let progressoCargo = 0;
 
 let cargo = "Operário";
+let virouCEO = false;
 
 /* ===== UI ===== */
 function atualizarUI() {
@@ -22,7 +23,16 @@ function atualizarUI() {
   setBar("saude", saude);
   setBar("satisfacao", satisfacao);
   setBar("fabricaBar", fabrica);
-  setBar("barraCargo", progressoCargo);
+
+  // barra de cargo especial
+  if (!virouCEO) {
+    setBar("barraCargo", progressoCargo);
+  } else {
+    let barra = document.getElementById("barraCargo");
+    barra.style.width = "100%";
+    barra.style.background = "gold";
+    barra.innerText = "CEO 👑";
+  }
 }
 
 /* ===== TURNOS ===== */
@@ -39,7 +49,6 @@ function usarTurno() {
   turno++;
   turnosTotais++;
 
-  // 🔥 EVENTO INTELIGENTE
   if (turnosTotais % 4 === 0 || Math.random() < 0.2) {
     evento();
   }
@@ -48,16 +57,14 @@ function usarTurno() {
 }
 
 function verificarFimDoDia() {
-  if (turno >= 2) {
-    avancarDia();
-  }
+  if (turno >= 2) avancarDia();
 }
 
 function avancarDia() {
   dia++;
   turno = 0;
 
-  log("🌙 Um novo dia começou.");
+  log("🌙 Novo dia começou.");
   atualizarUI();
 }
 
@@ -67,24 +74,26 @@ function trabalhar() {
 
   dinheiro += getSalario();
   eficiencia += 5;
-  progressoCargo += 10;
+  progressoCargo += 20;
 
   log("🔧 Você trabalhou.");
-  atualizarUI();
 
+  promover();
+  atualizarUI();
   verificarFimDoDia();
 }
 
 function descansar() {
   if (!usarTurno()) return;
 
-  saude += 10;
-  satisfacao += 5;
-  dinheiro -= 3;
+  eficiencia -= 10;
+  saude += 20;
+  satisfacao += 20;
+  dinheiro -= 5;
 
   log("😴 Você descansou.");
-  atualizarUI();
 
+  atualizarUI();
   verificarFimDoDia();
 }
 
@@ -114,41 +123,25 @@ function passarDia() {
   avancarDia();
 }
 
-/* ===== EVENTO ===== */
-function evento() {
-  mostrarPopup(
-    "⚠️ Evento!",
-    "Um problema ocorreu na fábrica!",
-    {
-      texto: "Resolver (-10 +Eficiência)",
-      acao: () => {
-        dinheiro -= 10;
-        eficiencia += 10;
-        log("Você resolveu o problema.");
-        atualizarUI();
-      }
-    },
-    {
-      texto: "Ignorar (-Eficiência)",
-      acao: () => {
-        eficiencia -= 10;
-        log("Você ignorou o problema.");
-        atualizarUI();
-      }
-    }
-  );
-}
-
 /* ===== PROMOÇÃO ===== */
 function promover() {
-  if (progressoCargo < 100) return;
+  if (virouCEO) return;
 
-  progressoCargo = 0;
+  if (progressoCargo >= 100) {
+    progressoCargo = 0;
 
-  if (cargo === "Operário") cargo = "Supervisor";
-  else if (cargo === "Supervisor") cargo = "Gerente";
-
-  log("🎉 Promoção para " + cargo + "!");
+    if (cargo === "Operário") {
+      cargo = "Supervisor";
+      log("📈 Promoção para Supervisor!");
+    } else if (cargo === "Supervisor") {
+      cargo = "Gerente";
+      log("🏆 Promoção para Gerente!");
+    } else if (cargo === "Gerente") {
+      cargo = "CEO";
+      virouCEO = true;
+      log("👑 Você virou CEO!");
+    }
+  }
 }
 
 /* ===== SALÁRIO ===== */
@@ -162,7 +155,10 @@ function getSalario() {
 /* ===== BARRAS ===== */
 function setBar(id, valor) {
   valor = Math.max(0, Math.min(100, valor));
-  document.getElementById(id).style.width = valor + "%";
+  const el = document.getElementById(id);
+
+  el.style.width = valor + "%";
+  el.innerText = valor + "%";
 }
 
 /* ===== LOG ===== */
@@ -170,6 +166,31 @@ function log(texto) {
   const logDiv = document.getElementById("log");
   logDiv.innerHTML =
     `📅 Dia ${dia} (${nomeTurno()}): ${texto}<br>` + logDiv.innerHTML;
+}
+
+/* ===== EVENTO ===== */
+function evento() {
+  mostrarPopup(
+    "⚠️ Evento!",
+    "Problema na fábrica!",
+    {
+      texto: "Resolver (-10 +Eficiência)",
+      acao: () => {
+        dinheiro -= 10;
+        eficiencia += 10;
+        log("Você resolveu.");
+        atualizarUI();
+      }
+    },
+    {
+      texto: "Ignorar (-Eficiência)",
+      acao: () => {
+        eficiencia -= 10;
+        log("Você ignorou.");
+        atualizarUI();
+      }
+    }
+  );
 }
 
 /* ===== POPUP ===== */
@@ -204,13 +225,13 @@ function fecharPopup() {
 function abrirFabrica() {
   mostrarPopup(
     "🏭 Fábrica",
-    "Deseja investir?",
+    "Investir?",
     {
       texto: "Investir (-20)",
       acao: () => {
         dinheiro -= 20;
         fabrica += 20;
-        log("Você investiu na fábrica.");
+        log("Você investiu.");
         atualizarUI();
       }
     },
