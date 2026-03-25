@@ -4,7 +4,7 @@ let dia = 1;
 let turno = 0;
 let turnosTotais = 0;
 
-let eficiencia = 50;
+let eficiencia = 10;
 let saude = 80;
 let satisfacao = 60;
 let fabrica = 0;
@@ -12,6 +12,7 @@ let progressoCargo = 0;
 
 let cargo = "Operário";
 let virouCEO = false;
+let fabricaDesbloqueada = false;
 
 /* ===== UI ===== */
 function atualizarUI() {
@@ -24,7 +25,14 @@ function atualizarUI() {
   setBar("satisfacao", satisfacao);
   setBar("fabricaBar", fabrica);
 
-  // barra de cargo especial
+  // liberar fábrica
+  if (cargo === "Gerente" && !fabricaDesbloqueada) {
+    fabricaDesbloqueada = true;
+    document.getElementById("btnFabrica").disabled = false;
+    log("🏭 Você desbloqueou sua fábrica!");
+  }
+
+  // barra de cargo
   if (!virouCEO) {
     setBar("barraCargo", progressoCargo);
   } else {
@@ -42,7 +50,7 @@ function nomeTurno() {
 
 function usarTurno() {
   if (turno >= 2) {
-    log("⚠️ Você já usou todos os turnos do dia!");
+    log("⚠️ Você já usou todos os turnos!");
     return false;
   }
 
@@ -73,7 +81,11 @@ function trabalhar() {
   if (!usarTurno()) return;
 
   dinheiro += getSalario();
-  eficiencia += 5;
+
+  eficiencia += 10;
+  saude -= 10;
+  satisfacao -= 10;
+
   progressoCargo += 20;
 
   log("🔧 Você trabalhou.");
@@ -87,8 +99,9 @@ function descansar() {
   if (!usarTurno()) return;
 
   eficiencia -= 10;
-  saude += 20;
-  satisfacao += 20;
+  saude += 10;
+  satisfacao += 10;
+
   dinheiro -= 5;
 
   log("😴 Você descansou.");
@@ -193,6 +206,36 @@ function evento() {
   );
 }
 
+/* ===== FÁBRICA ===== */
+function abrirFabrica() {
+  if (!fabricaDesbloqueada) {
+    log("🔒 Fábrica ainda não desbloqueada.");
+    return;
+  }
+
+  mostrarPopup(
+    "🏭 Fábrica",
+    "Melhorar a fábrica?",
+    {
+      texto: "Upgrade (-20 +10%)",
+      acao: () => {
+        if (dinheiro >= 20) {
+          dinheiro -= 20;
+          fabrica += 10;
+          log("📈 Fábrica evoluiu!");
+        } else {
+          log("❌ Dinheiro insuficiente!");
+        }
+        atualizarUI();
+      }
+    },
+    {
+      texto: "Cancelar",
+      acao: () => {}
+    }
+  );
+}
+
 /* ===== POPUP ===== */
 function mostrarPopup(titulo, texto, op1, op2) {
   document.getElementById("popupOverlay").style.display = "flex";
@@ -219,27 +262,6 @@ function mostrarPopup(titulo, texto, op1, op2) {
 
 function fecharPopup() {
   document.getElementById("popupOverlay").style.display = "none";
-}
-
-/* ===== FÁBRICA ===== */
-function abrirFabrica() {
-  mostrarPopup(
-    "🏭 Fábrica",
-    "Investir?",
-    {
-      texto: "Investir (-20)",
-      acao: () => {
-        dinheiro -= 20;
-        fabrica += 20;
-        log("Você investiu.");
-        atualizarUI();
-      }
-    },
-    {
-      texto: "Cancelar",
-      acao: () => {}
-    }
-  );
 }
 
 /* START */
