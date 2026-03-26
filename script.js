@@ -4,15 +4,16 @@ let dia = 1;
 let turno = 0;
 let turnosTotais = 0;
 
-let eficiencia = 10;
+let eficiencia = 20;
 let saude = 80;
 let satisfacao = 60;
 let fabrica = 0;
 let progressoCargo = 0;
 
 let cargo = "Operário";
-let virouCEO = false;
+let virouDono = false;
 let fabricaDesbloqueada = false;
+let jogoAtivo = true;
 
 /* ===== UI ===== */
 function atualizarUI() {
@@ -33,13 +34,13 @@ function atualizarUI() {
   }
 
   // barra de cargo
-  if (!virouCEO) {
+  if (!virouDono) {
     setBar("barraCargo", progressoCargo);
   } else {
     let barra = document.getElementById("barraCargo");
     barra.style.width = "100%";
     barra.style.background = "gold";
-    barra.innerText = "CEO 👑";
+    barra.innerText = "Dono 👑";
   }
 }
 
@@ -49,8 +50,10 @@ function nomeTurno() {
 }
 
 function usarTurno() {
+  if (!jogoAtivo) return false;
+
   if (turno >= 2) {
-    log("⚠️ Você já usou todos os turnos!");
+    log("⚠️ Turnos esgotados!");
     return false;
   }
 
@@ -91,6 +94,7 @@ function trabalhar() {
   log("🔧 Você trabalhou.");
 
   promover();
+  checarFim();
   atualizarUI();
   verificarFimDoDia();
 }
@@ -101,11 +105,11 @@ function descansar() {
   eficiencia -= 10;
   saude += 10;
   satisfacao += 10;
-
   dinheiro -= 5;
 
   log("😴 Você descansou.");
 
+  checarFim();
   atualizarUI();
   verificarFimDoDia();
 }
@@ -115,20 +119,23 @@ function arriscar() {
 
   if (Math.random() > 0.5) {
     eficiencia += 10;
-    log("🎲 Você teve sorte!");
+    log("🎲 Sorte!");
   } else {
     eficiencia -= 10;
-    log("💥 Deu ruim!");
+    log("💥 Azar!");
   }
 
+  checarFim();
   atualizarUI();
   verificarFimDoDia();
 }
 
 /* ===== BOTÃO + ===== */
 function passarDia() {
+  if (!jogoAtivo) return;
+
   if (turno === 1) {
-    log("⚠️ Não pode pular no meio do dia!");
+    log("⚠️ Não pode pular agora!");
     return;
   }
 
@@ -138,21 +145,21 @@ function passarDia() {
 
 /* ===== PROMOÇÃO ===== */
 function promover() {
-  if (virouCEO) return;
+  if (virouDono) return;
 
   if (progressoCargo >= 100) {
     progressoCargo = 0;
 
     if (cargo === "Operário") {
       cargo = "Supervisor";
-      log("📈 Promoção para Supervisor!");
+      log("📈 Promoção!");
     } else if (cargo === "Supervisor") {
       cargo = "Gerente";
-      log("🏆 Promoção para Gerente!");
+      log("🏆 Virou gerente!");
     } else if (cargo === "Gerente") {
-      cargo = "CEO";
-      virouCEO = true;
-      log("👑 Você virou CEO!");
+      cargo = "Dono";
+      virouDono = true;
+      log("👑 Você virou Dono!");
     }
   }
 }
@@ -162,7 +169,48 @@ function getSalario() {
   if (cargo === "Operário") return 3;
   if (cargo === "Supervisor") return 6;
   if (cargo === "Gerente") return 18;
+  if (cargo === "Dono") return 50;
   return 0;
+}
+
+/* ===== FINAIS ===== */
+function checarFim() {
+
+  // FINAL RUIM
+  if (eficiencia <= 0 || saude <= 0 || satisfacao <= 0) {
+    jogoAtivo = false;
+
+    mostrarPopup(
+      "💀 Demitido!",
+      "Você foi demitido!!",
+      {
+        texto: "Reiniciar",
+        acao: () => location.reload()
+      },
+      {
+        texto: "",
+        acao: () => {}
+      }
+    );
+  }
+
+  // FINAL BOM
+  if (fabrica >= 100) {
+    jogoAtivo = false;
+
+    mostrarPopup(
+      "🏆 Vitória!",
+      "Você criou uma fábrica de sucesso!!",
+      {
+        texto: "Reiniciar",
+        acao: () => location.reload()
+      },
+      {
+        texto: "",
+        acao: () => {}
+      }
+    );
+  }
 }
 
 /* ===== BARRAS ===== */
@@ -191,7 +239,7 @@ function evento() {
       acao: () => {
         dinheiro -= 10;
         eficiencia += 10;
-        log("Você resolveu.");
+        log("Resolvido.");
         atualizarUI();
       }
     },
@@ -199,7 +247,7 @@ function evento() {
       texto: "Ignorar (-Eficiência)",
       acao: () => {
         eficiencia -= 10;
-        log("Você ignorou.");
+        log("Ignorado.");
         atualizarUI();
       }
     }
@@ -209,22 +257,23 @@ function evento() {
 /* ===== FÁBRICA ===== */
 function abrirFabrica() {
   if (!fabricaDesbloqueada) {
-    log("🔒 Fábrica ainda não desbloqueada.");
+    log("🔒 Fábrica bloqueada.");
     return;
   }
 
   mostrarPopup(
     "🏭 Fábrica",
-    "Melhorar a fábrica?",
+    "Melhorar fábrica?",
     {
       texto: "Upgrade (-20 +10%)",
       acao: () => {
         if (dinheiro >= 20) {
           dinheiro -= 20;
           fabrica += 10;
-          log("📈 Fábrica evoluiu!");
+          log("📈 Fábrica melhorou!");
+          checarFim();
         } else {
-          log("❌ Dinheiro insuficiente!");
+          log("❌ Sem dinheiro!");
         }
         atualizarUI();
       }
