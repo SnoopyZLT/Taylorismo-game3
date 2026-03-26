@@ -13,7 +13,27 @@ let progressoCargo = 0;
 let cargo = "Operário";
 let virouDono = false;
 let fabricaDesbloqueada = false;
-let jogoAtivo = true;
+let jogoAtivo = false; // começa travado até fechar tutorial
+
+/* ===== INICIO (TUTORIAL) ===== */
+window.onload = () => {
+  mostrarPopup(
+    "📘 Como jogar",
+    "• Cada dia tem 2 turnos (manhã/tarde)\n• Trabalhar, descansar ou arriscar consome 1 turno\n• Após 2 turnos, o dia avança\n• Eventos aparecem a cada 4 turnos\n• Evolua até Dono e leve sua fábrica a 100%\n• Se qualquer status zerar, você perde",
+    {
+      texto: "Começar",
+      acao: () => {
+        jogoAtivo = true;
+      }
+    },
+    {
+      texto: "",
+      acao: () => {}
+    }
+  );
+
+  atualizarUI();
+};
 
 /* ===== UI ===== */
 function atualizarUI() {
@@ -26,14 +46,12 @@ function atualizarUI() {
   setBar("satisfacao", satisfacao);
   setBar("fabricaBar", fabrica);
 
-  // liberar fábrica
   if (cargo === "Gerente" && !fabricaDesbloqueada) {
     fabricaDesbloqueada = true;
     document.getElementById("btnFabrica").disabled = false;
     log("🏭 Você desbloqueou sua fábrica!");
   }
 
-  // barra de cargo
   if (!virouDono) {
     setBar("barraCargo", progressoCargo);
   } else {
@@ -170,7 +188,6 @@ function getSalario() {
   if (cargo === "Supervisor") return 6;
   if (cargo === "Gerente") return 18;
   if (cargo === "Dono") return 50;
-  return 0;
 }
 
 /* ===== FINAIS ===== */
@@ -311,7 +328,4 @@ function mostrarPopup(titulo, texto, op1, op2) {
 
 function fecharPopup() {
   document.getElementById("popupOverlay").style.display = "none";
-}
-
-/* START */
-atualizarUI();
+      }
