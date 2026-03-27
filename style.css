@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: linear-gradient(#0b1a3a, #09142b);
     color: white;
 }
@@ -9,7 +9,6 @@ body {
 .topo {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     padding: 12px;
     background: linear-gradient(90deg, #2f6df6, #4f8cff);
     font-weight: bold;
@@ -23,28 +22,31 @@ body {
 /* RELATÓRIO */
 .relatorio {
     background: rgba(255,255,255,0.05);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 10px;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 12px;
 }
 
 .log {
-    max-height: 120px;
+    max-height: 180px;
+    min-height: 120px;
     overflow-y: auto;
 }
 
-/* BOTÕES (FIXO NO MEIO) */
+/* BOTÕES */
 .botoes {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    padding: 15px;
+    margin-top: 20px;
 }
 
+/* BOTÕES BASE */
 .btn {
     padding: 14px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: bold;
     color: white;
     font-size: 16px;
@@ -63,72 +65,36 @@ body {
 
 /* BOTÃO GRANDE */
 .grande {
-    width: calc(100% - 20px);
-    margin: 10px;
+    width: calc(100% - 30px);
+    margin: 20px auto;
+    display: block;
     background: linear-gradient(#6d8cff, #3a5df0);
 }
 
-/* STATUS EMBAIXO (FIXO CORRETO) */
+/* STATUS */
 .status {
-    padding: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.status-item {
+    margin-bottom: 18px;
 }
 
 /* BARRAS */
 .barra {
     background: #222;
     border-radius: 20px;
-    height: 10px;
+    height: 8px;
     margin-top: 5px;
-    position: relative;
 }
 
 .barra-fill {
     height: 100%;
     border-radius: 20px;
-    width: 0%;
-    transition: width 0.4s;
 }
 
-.barra-text {
-    position: absolute;
-    right: 5px;
-    top: -18px;
-    font-size: 12px;
-}
-
-/* CORES DAS BARRAS */
+/* CORES */
 .vermelho { background: #ef4444; }
 .amarelo { background: #facc15; }
 .cinza { background: #555; }
-
-/* POPUP */
-.popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.hidden {
-    display: none;
-}
-
-.popup-box {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 15px;
-    width: 80%;
-    text-align: center;
-}
-
-.popup-botoes button {
-    margin: 5px;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    }
