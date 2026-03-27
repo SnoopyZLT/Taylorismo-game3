@@ -3,144 +3,141 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* BODY */
+/* FUNDO */
 body {
-  background: #0f172a;
+  background: linear-gradient(180deg, #0f172a, #020617);
   color: white;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 /* CONTAINER */
 .container {
   width: 100%;
-  max-width: 400px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
+  max-width: 420px;
+  padding: 12px;
 }
 
 /* TOPO */
 .topo {
-  text-align: center;
-  background: #1e3a8a;
-  padding: 10px;
-  border-radius: 10px;
-  border: 2px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-/* LOG */
-#log {
-  height: 120px;
-  overflow-y: auto;
-  background: #020617;
-  border: 2px solid black;
+/* CARD PADRÃO */
+.card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 15px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* CARGO */
+.cargo-box {
+  margin-bottom: 10px;
+}
+
+#cargoTexto {
+  margin-bottom: 5px;
+}
+
+/* BARRA MODERNA */
+.barra {
+  height: 14px;
+  background: rgba(255,255,255,0.1);
   border-radius: 10px;
-  padding: 8px;
-  margin: 10px 0;
+  overflow: hidden;
+  margin-top: 5px;
+  position: relative;
+}
+
+.barra.cargo {
+  height: 18px;
+}
+
+/* PROGRESSO */
+.barra div {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+/* CORES DIFERENTES */
+#barraCargo { background: linear-gradient(90deg, #38bdf8, #4ade80); }
+#eficienciaBar { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+#saudeBar { background: linear-gradient(90deg, #ef4444, #f97316); }
+#satisfacaoBar { background: linear-gradient(90deg, #facc15, #fde047); }
+#fabricaBar { background: linear-gradient(90deg, #94a3b8, #64748b); }
+
+/* TEXTO BARRA */
+.barra span {
+  position: absolute;
+  width: 100%;
+  text-align: right;
+  font-size: 11px;
+  padding-right: 5px;
+}
+
+/* RELATÓRIO */
+#log {
+  height: 110px;
+  overflow-y: auto;
   font-size: 13px;
+  line-height: 1.4;
 }
 
 /* BOTÕES */
 .botoes {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin: 10px 0;
 }
 
-/* BOTÃO BASE */
+/* BOTÕES BASE */
 button {
-  background: #2563eb;
-  border: none;
-  padding: 10px 14px;
+  padding: 12px;
   border-radius: 12px;
+  border: none;
   color: white;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
+}
 
-  /* 🔥 ANIMAÇÃO */
-  transition: all 0.2s ease;
+/* CORES */
+button:nth-child(1) { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+button:nth-child(2) { background: linear-gradient(90deg, #16a34a, #22c55e); }
+button:nth-child(3) { background: linear-gradient(90deg, #f97316, #ef4444); }
+button:nth-child(5) { background: linear-gradient(90deg, #7c3aed, #6366f1); }
+
+/* BOTÃO + DIA */
+#btnPassar {
+  grid-column: span 2;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  font-size: 16px;
 }
 
 /* HOVER */
 button:hover {
-  background: #3b82f6;
   transform: scale(1.05);
 }
 
 /* CLICK */
 button:active {
   transform: scale(0.95);
-  background: #1d4ed8;
-}
-
-/* BOTÃO + */
-#btnPassar {
-  font-size: 22px;
-  padding: 12px 16px;
-  border-radius: 50%;
 }
 
 /* BOTÃO DESATIVADO */
 button:disabled {
   background: gray;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* BARRAS */
-.barras {
-  margin-top: auto;
-}
-
-/* BARRA CONTAINER */
-.barra {
-  background: #1e293b;
-  border: 2px solid black;
-  border-radius: 10px;
-  margin: 6px 0;
-  overflow: hidden;
-  position: relative;
-}
-
-/* 🔥 BARRAS NORMAIS (MAIS FINAS) */
-.barra:not(.cargo) {
-  height: 14px;
-}
-
-/* 🔥 BARRA DE CARGO (MAIOR) */
-.barra.cargo {
-  height: 22px;
-}
-
-/* PREENCHIMENTO */
-.barra div {
-  height: 100%;
-  background: #3b82f6;
-  text-align: center;
-  font-size: 10px;
-  line-height: 14px;
-
-  /* 🔥 ANIMAÇÃO SUAVE */
-  transition: width 0.4s ease, background 0.3s ease;
-}
-
-/* TEXTO CENTRAL */
-.barra span {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  font-size: 10px;
-  top: 0;
-  left: 0;
 }
 
 /* POPUP */
@@ -150,40 +147,16 @@ button:disabled {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
   display: none;
   justify-content: center;
   align-items: center;
+  background: rgba(0,0,0,0.7);
 }
 
-/* CAIXA POPUP */
 .popup {
   background: #020617;
   padding: 20px;
   border-radius: 15px;
-  border: 2px solid black;
-  width: 90%;
-  max-width: 300px;
+  width: 85%;
   text-align: center;
-
-  /* 🔥 ANIMAÇÃO DE ENTRADA */
-  animation: aparecer 0.3s ease;
-}
-
-/* BOTÕES POPUP */
-.popup button {
-  margin-top: 10px;
-  width: 100%;
-}
-
-/* ANIMAÇÃO */
-@keyframes aparecer {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+                                          }
