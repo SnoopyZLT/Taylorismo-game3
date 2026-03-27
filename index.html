@@ -4,66 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simulador Taylorista</title>
+
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<!-- TOPO -->
+<div class="topo">
+    <div class="titulo">🏭 Simulador Taylorista</div>
+    <div class="dinheiro">💰 R$ <span id="money">0</span></div>
+</div>
 
-  <div class="topo">
-    🏭 Simulador Taylorista 💰 <span id="money">0</span>
-  </div>
-
-  <div class="cargo-box">
-    <div id="cargoTexto">Cargo: Operário</div>
-    <div class="barra cargo">
-      <div id="barraCargo"></div>
-      <span id="cargoPercent">0%</span>
-    </div>
-    <div id="diaTurno">Dia 1 - Manhã</div>
-  </div>
-
-  <div id="log"></div>
-
-  <div class="botoes">
-
-    <button onclick="trabalhar()">🔧 Trabalhar</button>
-    <button onclick="descansar()">😴 Descansar</button>
-
-    <button id="btnPassar" onclick="passarTurno()">+</button>
-
-    <button onclick="arriscar()">🎲 Arriscar</button>
-    <button id="btnFabrica" onclick="abrirFabrica()" disabled>🏭 Fábrica</button>
-
-  </div>
-
-  <div class="barras">
-
-    <div class="barra">
-      <div id="eficienciaBar"></div>
-      <span>⚙️ Eficiência</span>
+<!-- CARGO -->
+<div class="cargo-box">
+    <div class="cargo-texto">
+        Cargo: <span id="cargo">Operário</span> • <span id="turno">Manhã</span>
     </div>
 
     <div class="barra">
-      <div id="saudeBar"></div>
-      <span>❤️ Saúde</span>
+        <div class="barra-fill" id="barraCargo"></div>
+        <span class="barra-text" id="cargoPorcento">0%</span>
     </div>
+</div>
 
-    <div class="barra">
-      <div id="satisfacaoBar"></div>
-      <span>🙂 Satisfação</span>
-    </div>
+<!-- RELATÓRIO -->
+<div class="relatorio">
+    <div class="relatorio-titulo">📋 Relatório do Dia</div>
+    <div id="log" class="log"></div>
+</div>
 
-    <div class="barra">
-      <div id="fabricaBar"></div>
-      <span>🏭 Fábrica</span>
-    </div>
+<!-- BOTÕES -->
+<div class="botoes">
 
-  </div>
+    <button onclick="trabalhar()" class="btn azul">🔧 Trabalhar</button>
+    <button onclick="descansar()" class="btn verde">😴 Descansar</button>
+
+    <button onclick="arriscar()" class="btn laranja">🎲 Arriscar</button>
+    <button onclick="abrirFabrica()" id="btnFabrica" class="btn roxo" disabled>🏭 Gerenciar</button>
 
 </div>
 
+<!-- PULAR DIA -->
+<button onclick="pularDia()" class="btn grande">➕ Próximo Dia</button>
+
+<!-- STATUS -->
+<div class="status">
+
+    <div class="status-item">
+        ⚙️ Eficiência
+        <div class="barra">
+            <div id="eficienciaBar" class="barra-fill azul"></div>
+            <span id="eficienciaTxt">0%</span>
+        </div>
+    </div>
+
+    <div class="status-item">
+        ❤️ Saúde
+        <div class="barra">
+            <div id="saudeBar" class="barra-fill vermelho"></div>
+            <span id="saudeTxt">0%</span>
+        </div>
+    </div>
+
+    <div class="status-item">
+        🙂 Satisfação
+        <div class="barra">
+            <div id="satisfacaoBar" class="barra-fill amarelo"></div>
+            <span id="satisfacaoTxt">0%</span>
+        </div>
+    </div>
+
+    <div class="status-item">
+        🏭 Fábrica
+        <div class="barra">
+            <div id="fabricaBar" class="barra-fill cinza"></div>
+            <span id="fabricaTxt">0%</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+    <div class="popup-box">
+        <h2 id="popupTitulo"></h2>
+        <p id="popupTexto"></p>
+
+        <div class="popup-botoes">
+            <button onclick="confirmarPopup()">Confirmar</button>
+            <button onclick="fecharPopup()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <script src="script.js"></script>
+
 </body>
-</html>
+  </html>
