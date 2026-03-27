@@ -1,39 +1,33 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-/* BODY */
 body {
+  margin: 0;
   background: #0f172a;
-  color: white;
+  font-family: Arial;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
-/* CONTAINER */
+/* CONTAINER CENTRAL */
 .container {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 10px;
 }
 
 /* TOPO */
 .topo {
-  text-align: center;
-  background: #1e3a8a;
+  background: #2563eb;
   padding: 10px;
   border-radius: 10px;
-  border: 2px solid black;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* CARGO */
+.cargo-box {
+  margin-top: 10px;
 }
 
 /* LOG */
@@ -41,59 +35,40 @@ body {
   height: 120px;
   overflow-y: auto;
   background: #020617;
-  border: 2px solid black;
   border-radius: 10px;
   padding: 8px;
   margin: 10px 0;
-  font-size: 13px;
+}
+
+/* BOTÕES ORGANIZADOS */
+.botoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* BOTÃO + CENTRAL */
+#btnPassar {
+  grid-column: span 2;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 22px;
 }
 
 /* BOTÕES */
-.botoes {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin: 10px 0;
-}
-
-/* BOTÃO BASE */
 button {
-  background: #2563eb;
-  border: none;
-  padding: 10px 14px;
+  width: 100%;
+  padding: 10px;
   border-radius: 12px;
+  border: none;
+  background: #3b82f6;
   color: white;
   font-weight: bold;
   cursor: pointer;
-
-  /* 🔥 ANIMAÇÃO */
-  transition: all 0.2s ease;
-}
-
-/* HOVER */
-button:hover {
-  background: #3b82f6;
-  transform: scale(1.05);
-}
-
-/* CLICK */
-button:active {
-  transform: scale(0.95);
-  background: #1d4ed8;
-}
-
-/* BOTÃO + */
-#btnPassar {
-  font-size: 22px;
-  padding: 12px 16px;
-  border-radius: 50%;
-}
-
-/* BOTÃO DESATIVADO */
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* BARRAS */
@@ -101,46 +76,32 @@ button:disabled {
   margin-top: auto;
 }
 
-/* BARRA CONTAINER */
 .barra {
-  background: #1e293b;
-  border: 2px solid black;
-  border-radius: 10px;
-  margin: 6px 0;
-  overflow: hidden;
   position: relative;
-}
-
-/* 🔥 BARRAS NORMAIS (MAIS FINAS) */
-.barra:not(.cargo) {
   height: 14px;
+  background: #1e293b;
+  border-radius: 10px;
+  margin: 8px 0;
+  overflow: hidden;
 }
 
-/* 🔥 BARRA DE CARGO (MAIOR) */
 .barra.cargo {
-  height: 22px;
+  height: 20px;
 }
 
-/* PREENCHIMENTO */
 .barra div {
   height: 100%;
+  width: 0%;
   background: #3b82f6;
-  text-align: center;
-  font-size: 10px;
-  line-height: 14px;
-
-  /* 🔥 ANIMAÇÃO SUAVE */
-  transition: width 0.4s ease, background 0.3s ease;
+  transition: width 0.4s;
 }
 
-/* TEXTO CENTRAL */
 .barra span {
   position: absolute;
   width: 100%;
   text-align: center;
   font-size: 10px;
   top: 0;
-  left: 0;
 }
 
 /* POPUP */
@@ -150,40 +111,16 @@ button:disabled {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
   display: none;
   justify-content: center;
   align-items: center;
+  background: rgba(0,0,0,0.7);
 }
 
-/* CAIXA POPUP */
 .popup {
   background: #020617;
   padding: 20px;
   border-radius: 15px;
-  border: 2px solid black;
-  width: 90%;
-  max-width: 300px;
+  width: 80%;
   text-align: center;
-
-  /* 🔥 ANIMAÇÃO DE ENTRADA */
-  animation: aparecer 0.3s ease;
-}
-
-/* BOTÕES POPUP */
-.popup button {
-  margin-top: 10px;
-  width: 100%;
-}
-
-/* ANIMAÇÃO */
-@keyframes aparecer {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
