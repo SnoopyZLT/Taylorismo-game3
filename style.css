@@ -1,162 +1,134 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
-
-/* FUNDO */
 body {
-  background: linear-gradient(180deg, #0f172a, #020617);
-  color: white;
-  display: flex;
-  justify-content: center;
-}
-
-/* CONTAINER */
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 12px;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#0b1a3a, #09142b);
+    color: white;
 }
 
 /* TOPO */
 .topo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-/* CARD PADRÃO */
-.card {
-  background: rgba(255,255,255,0.05);
-  border-radius: 15px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: linear-gradient(90deg, #2f6df6, #4f8cff);
+    font-weight: bold;
 }
 
 /* CARGO */
 .cargo-box {
-  margin-bottom: 10px;
-}
-
-#cargoTexto {
-  margin-bottom: 5px;
-}
-
-/* BARRA MODERNA */
-.barra {
-  height: 14px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 5px;
-  position: relative;
-}
-
-.barra.cargo {
-  height: 18px;
-}
-
-/* PROGRESSO */
-.barra div {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.4s ease;
-}
-
-/* CORES DIFERENTES */
-#barraCargo { background: linear-gradient(90deg, #38bdf8, #4ade80); }
-#eficienciaBar { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-#saudeBar { background: linear-gradient(90deg, #ef4444, #f97316); }
-#satisfacaoBar { background: linear-gradient(90deg, #facc15, #fde047); }
-#fabricaBar { background: linear-gradient(90deg, #94a3b8, #64748b); }
-
-/* TEXTO BARRA */
-.barra span {
-  position: absolute;
-  width: 100%;
-  text-align: right;
-  font-size: 11px;
-  padding-right: 5px;
+    padding: 10px;
 }
 
 /* RELATÓRIO */
-#log {
-  height: 110px;
-  overflow-y: auto;
-  font-size: 13px;
-  line-height: 1.4;
+.relatorio {
+    background: rgba(255,255,255,0.05);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
 }
 
-/* BOTÕES */
+.log {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+/* BOTÕES (FIXO NO MEIO) */
 .botoes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
 }
 
-/* BOTÕES BASE */
-button {
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
+.btn {
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.95);
 }
 
 /* CORES */
-button:nth-child(1) { background: linear-gradient(90deg, #2563eb, #3b82f6); }
-button:nth-child(2) { background: linear-gradient(90deg, #16a34a, #22c55e); }
-button:nth-child(3) { background: linear-gradient(90deg, #f97316, #ef4444); }
-button:nth-child(5) { background: linear-gradient(90deg, #7c3aed, #6366f1); }
+.azul { background: linear-gradient(#3a7bfd, #1e4ed8); }
+.verde { background: linear-gradient(#22c55e, #15803d); }
+.laranja { background: linear-gradient(#f97316, #c2410c); }
+.roxo { background: linear-gradient(#a855f7, #6b21a8); }
 
-/* BOTÃO + DIA */
-#btnPassar {
-  grid-column: span 2;
-  background: linear-gradient(90deg, #3b82f6, #2563eb);
-  font-size: 16px;
+/* BOTÃO GRANDE */
+.grande {
+    width: calc(100% - 20px);
+    margin: 10px;
+    background: linear-gradient(#6d8cff, #3a5df0);
 }
 
-/* HOVER */
-button:hover {
-  transform: scale(1.05);
+/* STATUS EMBAIXO (FIXO CORRETO) */
+.status {
+    padding: 10px;
 }
 
-/* CLICK */
-button:active {
-  transform: scale(0.95);
+/* BARRAS */
+.barra {
+    background: #222;
+    border-radius: 20px;
+    height: 10px;
+    margin-top: 5px;
+    position: relative;
 }
 
-/* BOTÃO DESATIVADO */
-button:disabled {
-  background: gray;
+.barra-fill {
+    height: 100%;
+    border-radius: 20px;
+    width: 0%;
+    transition: width 0.4s;
 }
+
+.barra-text {
+    position: absolute;
+    right: 5px;
+    top: -18px;
+    font-size: 12px;
+}
+
+/* CORES DAS BARRAS */
+.vermelho { background: #ef4444; }
+.amarelo { background: #facc15; }
+.cinza { background: #555; }
 
 /* POPUP */
-#popupOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.7);
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.popup {
-  background: #020617;
-  padding: 20px;
-  border-radius: 15px;
-  width: 85%;
-  text-align: center;
-                                          }
+.hidden {
+    display: none;
+}
+
+.popup-box {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    width: 80%;
+    text-align: center;
+}
+
+.popup-botoes button {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+  }
