@@ -4,7 +4,7 @@ let dia = 1;
 let turno = 0;
 let turnosTotais = 0;
 
-let eficiencia = 20;
+let eficiencia = 50;
 let saude = 80;
 let satisfacao = 60;
 let fabrica = 0;
@@ -328,4 +328,4 @@ function mostrarPopup(titulo, texto, op1, op2) {
 
 function fecharPopup() {
   document.getElementById("popupOverlay").style.display = "none";
-      }
+}
