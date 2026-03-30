@@ -1,4 +1,4 @@
-body {
+body{
   margin:0;
   font-family:Arial;
   background:#0b1e3b;
@@ -6,9 +6,8 @@ body {
 }
 
 header{
-  background:#2d6cdf;
-  padding:15px;
-  font-size:20px;
+  background:#2563eb;
+  padding:12px;
   display:flex;
   justify-content:space-between;
 }
@@ -19,23 +18,49 @@ header{
   margin:auto;
 }
 
-.cargo-box{
-  margin-bottom:15px;
+.status{
+  margin-bottom:20px;
 }
 
-.relatorio{
+.barra{
   background:#111;
-  border:2px solid black;
   border-radius:10px;
-  padding:10px;
-  height:120px;
-  overflow-y:auto;
-  margin-bottom:15px;
+  height:14px;
+  margin:10px 0;
+  position:relative;
+}
+
+.barra div{
+  height:100%;
+  width:50%;
+  border-radius:10px;
+  transition:0.4s;
+}
+
+.barra span{
+  position:absolute;
+  left:10px;
+  top:-18px;
+  font-size:12px;
+}
+
+/* cores */
+#energia{background:#3b82f6;}
+#estresse{background:#ef4444;}
+#eficiencia{background:#22c55e;}
+#saude{background:#f97316;}
+#satisfacao{background:#eab308;}
+
+.cargo{
+  height:18px;
+}
+
+#cargoBar{
+  background:gold;
 }
 
 .botoes{
   display:grid;
-  grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
@@ -52,36 +77,9 @@ button:active{
   transform:scale(0.95);
 }
 
-.proximo{
-  width:100%;
-  margin-top:10px;
-  background:#3a7fff;
-}
-
-.status{
-  margin-top:15px;
-}
-
-.barra{
-  background:#222;
-  border:2px solid black;
-  border-radius:10px;
-  height:14px;
-  overflow:hidden;
-  margin-bottom:10px;
-}
-
-.barra div{
-  height:100%;
-  width:0%;
-  transition:0.4s;
-}
-
-#ef{background:#4da6ff;}
-#sa{background:#ff4d4d;}
-#st{background:#ffd633;}
-#fa{background:#999;}
-#cargoBarra{background:gold;}
+.trabalhar{background:#22c55e;}
+.descansar{background:#4ade80;}
+.investir{background:#facc15;}
 
 .popup{
   position:fixed;
@@ -98,8 +96,7 @@ button:active{
   background:#1c2b4a;
   padding:20px;
   border-radius:15px;
-  width:90%;
-  max-width:300px;
+  width:80%;
 }
 
 .hidden{display:none;}
