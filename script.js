@@ -1,48 +1,47 @@
 let dia = 1;
-let turno = 0;
+let turno = 0; // 0 manhã, 1 tarde
+let dinheiro = 0;
 
-let dinheiro = 100;
-let energia = 50;
-let estresse = 20;
 let eficiencia = 50;
-let saude = 70;
+let saude = 80;
 let satisfacao = 60;
+let fabrica = 0;
 
-let cargo = 0;
-let progresso = 0;
+let cargoNivel = 0;
+let cargoProgresso = 0;
 
 const cargos = ["Operário","Supervisor","Gerente","Dono"];
 
 function clamp(v){ return Math.max(0, Math.min(100,v)); }
 
-function atualizar(){
-  document.getElementById("money").innerText = dinheiro;
+function atualizarUI(){
+  document.getElementById("money").innerText = "R$ " + dinheiro;
 
-  document.getElementById("energia").style.width = energia+"%";
-  document.getElementById("estresse").style.width = estresse+"%";
-  document.getElementById("eficiencia").style.width = eficiencia+"%";
-  document.getElementById("saude").style.width = saude+"%";
-  document.getElementById("satisfacao").style.width = satisfacao+"%";
+  document.getElementById("cargoTexto").innerText =
+    "Cargo: " + cargos[cargoNivel] + " • " + (turno==0?"Manhã":"Tarde");
 
-  document.getElementById("cargoBar").style.width = progresso+"%";
-  document.getElementById("cargoTxt").innerText = cargos[cargo];
+  document.getElementById("cargoBarra").style.width = cargoProgresso + "%";
+  document.getElementById("cargoPorcentagem").innerText = cargoProgresso+"%";
 
-  if(cargo === 3){
-    document.getElementById("cargoTxt").innerText = "👑 DONO 👑";
+  document.getElementById("ef").style.width = eficiencia+"%";
+  document.getElementById("sa").style.width = saude+"%";
+  document.getElementById("st").style.width = satisfacao+"%";
+  document.getElementById("fa").style.width = fabrica+"%";
+
+  document.getElementById("efTxt").innerText = eficiencia+"%";
+  document.getElementById("saTxt").innerText = saude+"%";
+  document.getElementById("stTxt").innerText = satisfacao+"%";
+  document.getElementById("faTxt").innerText = fabrica+"%";
+
+  if(cargoNivel >=2){
+    document.getElementById("btnFabrica").disabled=false;
   }
-
-  document.getElementById("infoTempo").innerText =
-    "Dia "+dia+" - "+(turno==0?"Manhã":"Tarde");
 }
 
-function popup(titulo,texto){
-  document.getElementById("popupTitulo").innerText = titulo;
-  document.getElementById("popupTexto").innerText = texto;
-  document.getElementById("popup").classList.remove("hidden");
-}
-
-function fecharPopup(){
-  document.getElementById("popup").classList.add("hidden");
+function log(txt){
+  const r = document.getElementById("relatorio");
+  r.innerHTML += "<p>"+txt+"</p>";
+  r.scrollTop = r.scrollHeight;
 }
 
 function avancarTurno(){
@@ -50,80 +49,119 @@ function avancarTurno(){
   if(turno>1){
     turno=0;
     dia++;
+    evento();
   }
+  atualizarUI();
 }
 
-function acao(tipo){
+function trabalhar(){
+  eficiencia = clamp(eficiencia+10);
+  saude = clamp(saude-10);
+  satisfacao = clamp(satisfacao-10);
+  dinheiro += [3,6,18,50][cargoNivel];
 
-  if(tipo==="trabalhar"){
-    dinheiro += 50;
-    energia -= 20;
-    estresse += 15;
-    eficiencia += 10;
+  cargoProgresso += 10;
+  if(cargoProgresso>=100 && cargoNivel<3){
+    cargoNivel++;
+    cargoProgresso=0;
+    popup("Promoção","Você virou "+cargos[cargoNivel]);
   }
 
-  if(tipo==="descansar"){
-    energia += 25;
-    estresse -= 20;
-    saude += 10;
-    satisfacao += 10;
-    dinheiro -= 10;
-  }
-
-  if(tipo==="investir"){
-    if(Math.random()>0.5){
-      dinheiro += 80;
-      eficiencia += 15;
-    }else{
-      dinheiro -= 40;
-      estresse += 20;
-    }
-  }
-
-  energia = clamp(energia);
-  estresse = clamp(estresse);
-  eficiencia = clamp(eficiencia);
-  saude = clamp(saude);
-  satisfacao = clamp(satisfacao);
-
-  progresso += 20;
-
-  if(progresso>=100 && cargo<3){
-    cargo++;
-    progresso=0;
-    popup("Promoção", "Você virou "+cargos[cargo]);
-  }
-
-  verificarFim();
-
+  log("Você trabalhou.");
   avancarTurno();
-
-  popup("Turno",
-    `Dia ${dia} - ${(turno==0?"Manhã":"Tarde")}`
-  );
-
-  atualizar();
 }
 
-function verificarFim(){
+function descansar(){
+  eficiencia = clamp(eficiencia-10);
+  saude = clamp(saude+20);
+  satisfacao = clamp(satisfacao+20);
+  dinheiro -=5;
 
-  if(eficiencia<=0 || saude<=0 || satisfacao<=0){
-    popup("❌ Final Ruim","Você falhou!");
+  log("Você descansou.");
+  avancarTurno();
+}
+
+function arriscar(){
+  let chance = Math.random();
+  if(chance<0.5){
+    dinheiro+=20;
+    log("Você ganhou dinheiro!");
+  }else{
+    eficiencia-=15;
+    log("Deu ruim...");
+  }
+  avancarTurno();
+}
+
+function abrirFabrica(){
+  if(fabrica>=100){
+    finalBom();
     return;
   }
-
-  if(dinheiro < -50){
-    popup("❌ Falência","Você perdeu tudo!");
-    return;
+  if(dinheiro>=20){
+    dinheiro-=20;
+    fabrica = clamp(fabrica+10);
+    log("Você investiu na fábrica.");
+  }else{
+    popup("Sem dinheiro","Você precisa de dinheiro.");
   }
+  atualizarUI();
+}
 
-  if(dinheiro>=400){
-    if(estresse<=50){
-      popup("🏆 Final Bom","Você venceu sendo equilibrado!");
-    }else{
-      popup("⚠️ Burnout","Você venceu, mas destruído!");
-    }
+function proximoDia(){
+  if(turno==0){
+    dia++;
+    evento();
+  }
+  atualizarUI();
+}
+
+function evento(){
+  if(Math.random()<0.3){
+    popup("Problema na fábrica",
+      "Máquina quebrou!",
+      [
+        {txt:"Consertar (-10$ +10 eficiência)",fn:()=>{
+          dinheiro-=10;
+          eficiencia=clamp(eficiencia+10);
+        }},
+        {txt:"Ignorar (-10 eficiência)",fn:()=>{
+          eficiencia=clamp(eficiencia-10);
+        }}
+      ]
+    );
   }
 }
 
-atualizar();
+function popup(titulo,texto,opcoes=[]){
+  document.getElementById("popup").classList.remove("hidden");
+  document.getElementById("popupTitulo").innerText=titulo;
+  document.getElementById("popupTexto").innerText=texto;
+
+  let btns="";
+  opcoes.forEach(o=>{
+    btns+=`<button onclick="popupEscolha(${opcoes.indexOf(o)})">${o.txt}</button>`;
+  });
+  if(opcoes.length==0){
+    btns='<button onclick="fecharPopup()">OK</button>';
+  }
+
+  window.popupOpcoes=opcoes;
+  document.getElementById("popupBtns").innerHTML=btns;
+}
+
+function popupEscolha(i){
+  window.popupOpcoes[i].fn();
+  fecharPopup();
+  atualizarUI();
+}
+
+function fecharPopup(){
+  document.getElementById("popup").classList.add("hidden");
+}
+
+function finalBom(){
+  popup("Final","Você criou uma fábrica de sucesso!");
+}
+
+atualizarUI();
