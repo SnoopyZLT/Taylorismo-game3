@@ -11,35 +11,46 @@
 
 <header>
   🏭 Simulador Taylorista
-  <span id="infoTempo">Dia 1 - Manhã</span>
+  <span id="money">R$ 0</span>
 </header>
 
 <div class="container">
 
-  <!-- STATUS -->
-  <div class="status">
-
-    <div>💰 Dinheiro: <span id="money">0</span></div>
-
-    <div class="barra"><div id="energia"></div><span>⚡ Energia</span></div>
-    <div class="barra"><div id="estresse"></div><span>😵 Estresse</span></div>
-    <div class="barra"><div id="eficiencia"></div><span>📈 Eficiência</span></div>
-    <div class="barra"><div id="saude"></div><span>❤️ Saúde</span></div>
-    <div class="barra"><div id="satisfacao"></div><span>😊 Satisfação</span></div>
-
-    <!-- CARGO -->
-    <div class="barra cargo">
-      <div id="cargoBar"></div>
-      <span id="cargoTxt">Operário</span>
+  <!-- CARGO -->
+  <div class="cargo-box">
+    <div id="cargoTexto">Cargo: Operário • Manhã</div>
+    <div class="barra">
+      <div id="cargoBarra"></div>
     </div>
-
+    <span id="cargoPorcentagem">0%</span>
   </div>
 
-  <!-- AÇÕES -->
+  <!-- RELATÓRIO -->
+  <div class="relatorio" id="relatorio"></div>
+
+  <!-- BOTÕES -->
   <div class="botoes">
-    <button class="trabalhar" onclick="acao('trabalhar')">Trabalhar</button>
-    <button class="descansar" onclick="acao('descansar')">Descansar</button>
-    <button class="investir" onclick="acao('investir')">Investir</button>
+    <button onclick="trabalhar()">🔧 Trabalhar</button>
+    <button onclick="descansar()">😴 Descansar</button>
+    <button onclick="arriscar()">🎲 Arriscar</button>
+    <button id="btnFabrica" onclick="abrirFabrica()" disabled>🏭 Gerenciar</button>
+  </div>
+
+  <button class="proximo" onclick="proximoDia()">➕ Próximo Dia</button>
+
+  <!-- BARRAS -->
+  <div class="status">
+    <p>⚙️ Eficiência <span id="efTxt">50%</span></p>
+    <div class="barra"><div id="ef"></div></div>
+
+    <p>❤️ Saúde <span id="saTxt">80%</span></p>
+    <div class="barra"><div id="sa"></div></div>
+
+    <p>🙂 Satisfação <span id="stTxt">60%</span></p>
+    <div class="barra"><div id="st"></div></div>
+
+    <p>🏭 Fábrica <span id="faTxt">0%</span></p>
+    <div class="barra"><div id="fa"></div></div>
   </div>
 
 </div>
@@ -49,10 +60,10 @@
   <div class="popup-box">
     <h2 id="popupTitulo"></h2>
     <p id="popupTexto"></p>
-    <button onclick="fecharPopup()">OK</button>
+    <div id="popupBtns"></div>
   </div>
 </div>
 
 <script src="script.js"></script>
 </body>
-  </html>
+</html>
