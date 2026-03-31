@@ -9,61 +9,86 @@
 
 <body>
 
-<header>
-  🏭 Simulador Taylorista
-  <span id="money">R$ 0</span>
-</header>
+<!-- TOPO -->
+<div class="topo">
+  <div>🏭 Simulador Taylorista</div>
+  <div>💰 R$ <span id="money">0</span></div>
+</div>
 
-<div class="container">
+<!-- CARGO -->
+<div class="cargo-box">
+  <div>
+    Cargo: <span id="cargo">Operário</span> • 
+    <span id="turno">Manhã</span>
+  </div>
 
-  <!-- CARGO -->
-  <div class="cargo-box">
-    <div id="cargoTexto">Cargo: Operário • Manhã</div>
+  <div class="barra">
+    <div id="barraCargo" class="barra-fill"></div>
+  </div>
+  <span id="cargoPorcento">0%</span>
+</div>
+
+<!-- RELATÓRIO -->
+<div class="relatorio">
+  <div class="titulo">📋 Relatório</div>
+  <div id="log" class="log"></div>
+</div>
+
+<!-- BOTÕES -->
+<div class="botoes">
+  <button onclick="trabalhar()" class="btn trabalhar">🔧 Trabalhar</button>
+  <button onclick="descansar()" class="btn descansar">😴 Descansar</button>
+
+  <button onclick="arriscar()" class="btn arriscar">🎲 Arriscar</button>
+  <button onclick="abrirFabrica()" id="btnFabrica" class="btn fabrica" disabled>🏭 Fábrica</button>
+</div>
+
+<!-- BOTÃO CENTRAL -->
+<button onclick="pularDia()" class="btn grande">➕ Pular Dia</button>
+
+<!-- STATUS -->
+<div class="status">
+
+  <div class="status-item">
+    ⚙️ Eficiência <span id="eficienciaTxt">50%</span>
     <div class="barra">
-      <div id="cargoBarra"></div>
+      <div id="eficienciaBar" class="barra-fill azul"></div>
     </div>
-    <span id="cargoPorcentagem">0%</span>
   </div>
 
-  <!-- RELATÓRIO -->
-  <div class="relatorio" id="relatorio"></div>
-
-  <!-- BOTÕES -->
-  <div class="botoes">
-    <button onclick="trabalhar()">🔧 Trabalhar</button>
-    <button onclick="descansar()">😴 Descansar</button>
-    <button onclick="arriscar()">🎲 Arriscar</button>
-    <button id="btnFabrica" onclick="abrirFabrica()" disabled>🏭 Gerenciar</button>
+  <div class="status-item">
+    ❤️ Saúde <span id="saudeTxt">80%</span>
+    <div class="barra">
+      <div id="saudeBar" class="barra-fill vermelho"></div>
+    </div>
   </div>
 
-  <button class="proximo" onclick="proximoDia()">➕ Próximo Dia</button>
+  <div class="status-item">
+    🙂 Satisfação <span id="satisfacaoTxt">60%</span>
+    <div class="barra">
+      <div id="satisfacaoBar" class="barra-fill amarelo"></div>
+    </div>
+  </div>
 
-  <!-- BARRAS -->
-  <div class="status">
-    <p>⚙️ Eficiência <span id="efTxt">50%</span></p>
-    <div class="barra"><div id="ef"></div></div>
-
-    <p>❤️ Saúde <span id="saTxt">80%</span></p>
-    <div class="barra"><div id="sa"></div></div>
-
-    <p>🙂 Satisfação <span id="stTxt">60%</span></p>
-    <div class="barra"><div id="st"></div></div>
-
-    <p>🏭 Fábrica <span id="faTxt">0%</span></p>
-    <div class="barra"><div id="fa"></div></div>
+  <div class="status-item">
+    🏭 Fábrica <span id="fabricaTxt">0%</span>
+    <div class="barra">
+      <div id="fabricaBar" class="barra-fill cinza"></div>
+    </div>
   </div>
 
 </div>
 
-<!-- POPUP -->
+<!-- POPUP DINÂMICO -->
 <div id="popup" class="popup hidden">
   <div class="popup-box">
     <h2 id="popupTitulo"></h2>
     <p id="popupTexto"></p>
-    <div id="popupBtns"></div>
+    <button onclick="fecharPopup()">OK</button>
   </div>
 </div>
 
 <script src="script.js"></script>
+
 </body>
-</html>
+  </html>
