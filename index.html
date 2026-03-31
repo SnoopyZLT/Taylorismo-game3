@@ -24,6 +24,18 @@ body{
 /* CONTAINER */
 .container{
     padding:15px;
+    max-width:500px;
+    margin:auto;
+}
+
+/* RELATÓRIO */
+.relatorio{
+    background:black;
+    padding:10px;
+    height:160px;
+    overflow-y:auto;
+    border-radius:10px;
+    border:2px solid black;
 }
 
 /* BARRAS */
@@ -35,17 +47,17 @@ body{
     border:2px solid black;
 }
 .fill{
-    height:15px;
+    height:14px;
     width:0%;
-    transition:0.5s;
+    transition:0.4s;
 }
 
 /* CORES */
 .eficiencia{background:#4da6ff;}
 .saude{background:#ff4d4d;}
 .satisfacao{background:#ffd633;}
-.fabrica{background:#999;}
-.cargo{background:gold;}
+.fabrica{background:#888;}
+.cargo{background:#4da6ff;}
 
 /* BOTÕES */
 .botoes{
@@ -58,7 +70,7 @@ body{
 button{
     padding:15px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     font-size:16px;
     color:white;
     cursor:pointer;
@@ -72,17 +84,8 @@ button:active{
 .trabalhar{background:#2f6de0;}
 .descansar{background:#2ecc71;}
 .arriscar{background:#ff6600;}
+.fabricaBtn{background:#8e44ad;}
 .proximo{background:#5a7dff;grid-column:span 2;}
-
-/* RELATÓRIO */
-.relatorio{
-    background:black;
-    padding:10px;
-    height:150px;
-    overflow-y:auto;
-    border-radius:10px;
-    border:2px solid black;
-}
 
 /* POPUP */
 .popup{
@@ -95,11 +98,11 @@ button:active{
     border-radius:15px;
     display:none;
     text-align:center;
+    width:80%;
 }
 
 .popup button{
     margin-top:10px;
-    background:#2f6de0;
 }
 </style>
 </head>
@@ -113,7 +116,7 @@ button:active{
 
 <div class="container">
 
-<h3 id="cargoTxt">Cargo: Operário</h3>
+<h3 id="cargoTxt">Cargo: Operário • Manhã</h3>
 
 <div class="barra">
     <div id="barraCargo" class="fill cargo"></div>
@@ -125,6 +128,7 @@ button:active{
     <button class="trabalhar" onclick="acao('trabalhar')">🔧 Trabalhar</button>
     <button class="descansar" onclick="acao('descansar')">😴 Descansar</button>
     <button class="arriscar" onclick="acao('arriscar')">🎲 Arriscar</button>
+    <button id="btnFabrica" class="fabricaBtn" onclick="gerenciar()" disabled>🏭 Gerenciar</button>
     <button class="proximo" onclick="pularDia()">➕ Próximo Dia</button>
 </div>
 
@@ -142,7 +146,6 @@ button:active{
 
 </div>
 
-<!-- POPUP -->
 <div class="popup" id="popup">
     <div id="popupText"></div>
     <button onclick="fecharPopup()">OK</button>
@@ -156,38 +159,46 @@ let eficiencia = 50;
 let saude = 50;
 let satisfacao = 50;
 let fabrica = 0;
+
 let cargoXP = 0;
-let cargo = "Operário";
+let cargoNivel = 0;
+let cargos = ["Operário","Supervisor","Gerente","Dono"];
 
 let dia = 1;
 let turno = "Manhã";
 
 /* LIMITADOR */
-function limite(valor){
-    return Math.max(0, Math.min(100, valor));
+function limite(v){
+    return Math.max(0, Math.min(100, v));
 }
 
-/* ATUALIZA UI */
+/* UI */
 function atualizar(){
+
     eficiencia = limite(eficiencia);
     saude = limite(saude);
     satisfacao = limite(satisfacao);
     fabrica = limite(fabrica);
-    cargoXP = limite(cargoXP);
 
     document.getElementById("eficiencia").style.width = eficiencia+"%";
     document.getElementById("saude").style.width = saude+"%";
     document.getElementById("satisfacao").style.width = satisfacao+"%";
     document.getElementById("fabrica").style.width = fabrica+"%";
+
     document.getElementById("barraCargo").style.width = cargoXP+"%";
 
     document.getElementById("dinheiro").innerText = "R$ "+dinheiro;
-    document.getElementById("cargoTxt").innerText = "Cargo: "+cargo+" • "+turno;
+    document.getElementById("cargoTxt").innerText = "Cargo: "+cargos[cargoNivel]+" • "+turno;
+
+    /* LIBERAR FÁBRICA */
+    if(cargoNivel >= 2){
+        document.getElementById("btnFabrica").disabled = false;
+    }
 
     verificarFim();
 }
 
-/* RELATÓRIO */
+/* LOG */
 function log(txt){
     let r = document.getElementById("relatorio");
     r.innerHTML += "<p>"+txt+"</p>";
@@ -208,43 +219,67 @@ function fecharPopup(){
 function acao(tipo){
 
     if(tipo==="trabalhar"){
-        dinheiro+=3;
-        eficiencia+=10;
-        saude-=10;
-        satisfacao-=10;
-        cargoXP+=10;
-
+        dinheiro += (cargoNivel+1)*3;
+        eficiencia += 10;
+        saude -= 10;
+        satisfacao -= 10;
+        cargoXP += 10;
         log("Você trabalhou.");
     }
 
     if(tipo==="descansar"){
-        dinheiro-=5;
-        eficiencia-=10;
-        saude+=20;
-        satisfacao+=20;
-
+        dinheiro -= 5;
+        eficiencia -= 10;
+        saude += 20;
+        satisfacao += 20;
         log("Você descansou.");
     }
 
     if(tipo==="arriscar"){
-        let sorte=Math.random();
-        if(sorte>0.5){
-            dinheiro+=10;
-            eficiencia+=5;
+        if(Math.random()>0.5){
+            dinheiro += 15;
             log("Você ganhou!");
         }else{
-            dinheiro-=10;
-            eficiencia-=5;
+            dinheiro -= 15;
             log("Você perdeu!");
         }
     }
 
+    subirCargo();
     avancarTurno();
 }
 
-/* TURNOS */
+/* GERENCIAR FÁBRICA */
+function gerenciar(){
+    if(dinheiro >= 20){
+        dinheiro -= 20;
+        fabrica += 10;
+        popup("🏭 Você investiu na fábrica!");
+    }else{
+        popup("Sem dinheiro!");
+    }
+    atualizar();
+}
+
+/* PROGRESSÃO */
+function subirCargo(){
+    if(cargoXP >= 100 && cargoNivel < 3){
+        cargoXP = 0;
+        cargoNivel++;
+
+        if(cargoNivel === 3){
+            document.getElementById("barraCargo").style.background="gold";
+            popup("👑 Você virou DONO!");
+        }else{
+            popup("📈 Promoção: "+cargos[cargoNivel]);
+        }
+    }
+}
+
+/* TURNO */
 function avancarTurno(){
-    popup("Dia "+dia+" / Turno "+turno);
+
+    popup("Dia "+dia+" / "+turno);
 
     if(turno==="Manhã"){
         turno="Tarde";
@@ -264,7 +299,7 @@ function pularDia(){
     atualizar();
 }
 
-/* PROGRESSÃO */
+/* FIM */
 function verificarFim(){
 
     if(eficiencia<=0 || saude<=0 || satisfacao<=0){
@@ -274,13 +309,6 @@ function verificarFim(){
     if(dinheiro < -50){
         popup("💸 Falência!");
     }
-
-    if(cargoXP>=100 && cargo!=="Dono"){
-        cargo="Dono";
-        cargoXP=100;
-        document.getElementById("barraCargo").style.background="gold";
-        popup("👑 Você virou DONO!");
-    }
 }
 
 atualizar();
@@ -288,4 +316,4 @@ atualizar();
 </script>
 
 </body>
-                     </html>
+    </html>
