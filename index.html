@@ -281,165 +281,29 @@ function acao(tipo){
     avancarTurno();
 }
 
-<script>
-
-/* ESTADO */
-let dinheiro = 0;
-let eficiencia = 15;
-let saude = 50;
-let satisfacao = 50;
-let fabrica = 0;
-
-let cargoXP = 0;
-let cargoNivel = 0;
-let cargos = ["Operário","Supervisor","Gerente","Dono"];
-
-let dia = 1;
-let turno = "Manhã";
-
-let jogoAtivo = true;
-let popupAtivo = false;
-
-/* LIMITADOR */
-function limite(v){ return Math.max(0, Math.min(100, v)); }
-
-/* UI */
-function atualizar(){
-
-    eficiencia = limite(eficiencia);
-    saude = limite(saude);
-    satisfacao = limite(satisfacao);
-    fabrica = limite(fabrica);
-    cargoXP = limite(cargoXP);
-
-    document.getElementById("eficiencia").style.width = eficiencia+"%";
-    document.getElementById("eficiencia").innerText = eficiencia+"%";
-
-    document.getElementById("saude").style.width = saude+"%";
-    document.getElementById("saude").innerText = saude+"%";
-
-    document.getElementById("satisfacao").style.width = satisfacao+"%";
-    document.getElementById("satisfacao").innerText = satisfacao+"%";
-
-    document.getElementById("fabrica").style.width = fabrica+"%";
-    document.getElementById("fabrica").innerText = fabrica+"%";
-
-    document.getElementById("barraCargo").style.width = cargoXP+"%";
-    document.getElementById("barraCargo").innerText = cargoXP+"%";
-
-    document.getElementById("dinheiro").innerText = "R$ "+dinheiro;
-
-    document.getElementById("cargoTxt").innerText =
-    "Cargo: "+cargos[cargoNivel]+" • Dia "+dia+" ("+turno+")";
-
-    if(cargoNivel >= 2){
-        document.getElementById("btnFabrica").disabled = false;
-    }
-
-    verificarFim();
-}
-
-/* LOG */
-function log(txt){
-    let r = document.getElementById("relatorio");
-    r.innerHTML += "<p>"+txt+"</p>";
-    r.scrollTop = r.scrollHeight;
-}
-
-/* POPUP MELHORADO (TRAVA O JOGO) */
-function popup(txt, opcoes=[]){
-
-    popupAtivo = true;
-
-    let btns = "";
-
-    opcoes.forEach(op=>{
-        btns += `<button style="font-size:16px;padding:12px;margin-top:8px;" onclick="${op.acao}">${op.nome}</button>`;
-    });
-
-    if(btns === ""){
-        btns = `<button onclick="fecharPopup()">OK</button>`;
-    }
-
-    document.getElementById("popupText").innerHTML = txt;
-    document.getElementById("popupBtns").innerHTML = btns;
-    document.getElementById("popup").style.display="block";
-}
-
-function fecharPopup(){
-    popupAtivo = false;
-    document.getElementById("popup").style.display="none";
-}
-
-/* AÇÕES */
-function acao(tipo){
-
-    if(!jogoAtivo || popupAtivo) return;
-
-    if(tipo==="trabalhar"){
-        dinheiro += (cargoNivel+1)*3;
-        eficiencia += 10;
-        saude -= 10;
-        satisfacao -= 10;
-
-        cargoXP += 15; // 🔥 MAIS DIFÍCIL
-
-        log("🔧 Você trabalhou.");
-    }
-
-    if(tipo==="descansar"){
-        dinheiro -= 5;
-        eficiencia -= 10;
-        saude += 20;
-        satisfacao += 20;
-        log("😴 Você descansou.");
-    }
-
-    if(tipo==="arriscar"){
-        if(Math.random()>0.5){
-            dinheiro += 20;
-            log("🎲 Você ganhou dinheiro!");
-        }else{
-            dinheiro -= 15;
-            log("🎲 Você perdeu dinheiro!");
-        }
-    }
-
-    subirCargo();
-    eventoAleatorio();
-    avancarTurno();
-}
-
 /* PROMOÇÃO */
 function subirCargo(){
-
     if(cargoXP>=100 && cargoNivel<3){
-
         cargoXP=0;
         cargoNivel++;
 
-        popup("📈 PROMOÇÃO!<br><br>Você virou <b>"+cargos[cargoNivel]+"</b>",[
+        popup("📈 PROMOÇÃO!<br>Agora você é <b>"+cargos[cargoNivel]+"</b>",[
             {nome:"Continuar",acao:"fecharPopup()"}
         ]);
 
         if(cargoNivel===3){
-            cargoXP = 100;
-            let barra = document.getElementById("barraCargo");
-            barra.style.background="gold";
-            barra.style.width="100%";
-            barra.innerText="👑DONO👑";
+            document.getElementById("barraCargo").style.background="gold";
+            document.getElementById("barraCargo").innerText="👑DONO👑";
         }
     }
 }
 
 /* EVENTOS */
 function eventoAleatorio(){
-
     if(Math.random()<0.3){
-
         popup("⚠️ Problema na fábrica!",[
-            {nome:"Resolver (-R$10 +10% Eficiência)",acao:"resolver()"},
-            {nome:"Ignorar (-10% Eficiência)",acao:"ignorar()"}
+            {nome:"Resolver (-R$10 +Eficiência)",acao:"resolver()"},
+            {nome:"Ignorar (-Eficiência)",acao:"ignorar()"}
         ]);
     }
 }
@@ -448,20 +312,15 @@ function resolver(){
     dinheiro -= 10;
     eficiencia += 10;
     fecharPopup();
-    atualizar();
 }
 
 function ignorar(){
     eficiencia -= 10;
     fecharPopup();
-    atualizar();
 }
 
 /* FÁBRICA */
 function abrirFabrica(){
-
-    if(popupAtivo) return;
-
     popup("🏭 Melhorias:",[
         {nome:"Máquinas (-R$20 +10%)",acao:"upgrade(20,10)"},
         {nome:"Funcionários (-R$30 +15%)",acao:"upgrade(30,15)"}
@@ -469,17 +328,11 @@ function abrirFabrica(){
 }
 
 function upgrade(custo, ganho){
-
     if(dinheiro>=custo){
         dinheiro -= custo;
         fabrica += ganho;
-        log("🏭 Fábrica melhorada!");
-    }else{
-        log("❌ Sem dinheiro.");
     }
-
     fecharPopup();
-    atualizar(); // 🔥 ATUALIZA NA HORA
 }
 
 /* TURNOS */
@@ -495,16 +348,13 @@ function avancarTurno(){
 
 /* PULAR DIA */
 function pularDia(){
-
-    if(popupAtivo) return;
-
     log("⏩ Dia "+dia+" → "+(dia+1));
     dia++;
     turno="Manhã";
     atualizar();
 }
 
-/* FINAIS */
+/* FIM COM BOTÃO */
 function verificarFim(){
 
     if(!jogoAtivo) return;
@@ -535,14 +385,14 @@ function restart(){
     location.reload();
 }
 
-/* TUTORIAL */
+/* TUTORIAL MELHORADO */
 window.onload = () =>{
     popup(
     "📘 COMO JOGAR<br><br>"+
-    "🔧 Trabalhe → dinheiro + progresso<br>"+
-    "😴 Descanse → recupera status<br>"+
+    "🔧 Trabalhe → ganha dinheiro<br>"+
+    "😴 Descanse → recupera<br>"+
     "🎲 Arrisque → risco/recompensa<br><br>"+
-    "⚠️ NÃO deixe barras zerarem<br>"+
+    "⚠️ Não deixe barras zerarem<br>"+
     "👑 Vire DONO!",
     [{nome:"Começar",acao:"fecharPopup()"}]
     );
@@ -551,6 +401,6 @@ window.onload = () =>{
 }
 
 </script>
-    
+
 </body>
-    </html>
+</html>
