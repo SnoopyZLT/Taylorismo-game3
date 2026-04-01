@@ -299,7 +299,7 @@ function restart(){
 window.onload = ()=>{
   popup(
     "📘 Tutorial",
-    "Equilibre suas barras, evolua e vire DONO 👑",
+    "Gerencie sua fábrica tomando decisões a cada turno: trabalhar aumenta dinheiro e progresso, mas reduz saúde e satisfação; descansar recupera status, mas custa dinheiro; arriscar pode gerar lucro ou prejuízo. Equilibre suas barras (eficiência, saúde e satisfação) para não zerar e ser demitido. Evolua de cargo até se tornar DONO e invista na fábrica para atingir 100% e vencer.",
     [{nome:"Começar",acao:"fecharPopup()"}]
   );
 
