@@ -1,216 +1,286 @@
+let dia = 1;
+let turno = 0;
+
 let dinheiro = 0;
-let eficiencia = 15; // ✔ começa em 15%
-let saude = 50;
-let satisfacao = 50;
+
+let eficiencia = 15; // corrigido
+let saude = 80;
+let satisfacao = 60;
 let fabrica = 0;
 
-let cargoXP = 0;
-let cargoNivel = 0;
-let cargos = ["Operário","Supervisor","Gerente","Dono"];
+let cargo = 0;
+let progresso = 0;
 
-let dia = 1;
-let turno = "Manhã";
-
+let popupAtivo = false;
 let jogoAtivo = true;
 
-/* LIMITADOR */
-function limite(v){
-    return Math.max(0, Math.min(100, v));
+const cargos = ["Operário","Supervisor","Gerente","Dono"];
+const salarios = [3,6,18,50];
+
+function limitar(v){
+  return Math.max(0, Math.min(100, v));
 }
 
-/* ATUALIZA UI */
-function atualizar(){
+/* POPUP */
+function popup(titulo, texto, botoes=[]){
+  popupAtivo = true;
 
-    eficiencia = limite(eficiencia);
-    saude = limite(saude);
-    satisfacao = limite(satisfacao);
-    cargoXP = limite(cargoXP);
+  document.getElementById("popupTitulo").innerText = titulo;
+  document.getElementById("popupTexto").innerHTML = texto;
 
-    // Barra cargo %
-    let barra = document.getElementById("barraCargo");
-    barra.style.width = cargoXP + "%";
-    barra.innerText = cargoXP + "%";
+  let html = "";
+  botoes.forEach(b=>{
+    html += `<button onclick="${b.acao}">${b.nome}</button>`;
+  });
 
-    document.getElementById("dinheiro").innerText = "R$ " + dinheiro;
+  if(html===""){
+    html = `<button onclick="fecharPopup()">OK</button>`;
+  }
 
-    document.getElementById("cargoTxt").innerText =
-    "Cargo: " + cargos[cargoNivel] + " • Dia " + dia + " (" + turno + ")";
+  document.getElementById("popupBtns").innerHTML = html;
+  document.getElementById("popup").classList.remove("hidden");
+}
 
-    verificarFim();
+function fecharPopup(){
+  popupAtivo = false;
+  document.getElementById("popup").classList.add("hidden");
+}
+
+/* UI */
+function atualizarUI(){
+
+  eficiencia = limitar(eficiencia);
+  saude = limitar(saude);
+  satisfacao = limitar(satisfacao);
+  fabrica = limitar(fabrica);
+  progresso = limitar(progresso);
+
+  document.getElementById("money").innerText = "R$ "+dinheiro;
+
+  document.getElementById("eficienciaBar").style.width = eficiencia+"%";
+  document.getElementById("saudeBar").style.width = saude+"%";
+  document.getElementById("satisfacaoBar").style.width = satisfacao+"%";
+  document.getElementById("fabricaBar").style.width = fabrica+"%";
+
+  document.getElementById("eficienciaTxt").innerText = eficiencia+"%";
+  document.getElementById("saudeTxt").innerText = saude+"%";
+  document.getElementById("satisfacaoTxt").innerText = satisfacao+"%";
+  document.getElementById("fabricaTxt").innerText = fabrica+"%";
+
+  document.getElementById("barraCargo").style.width = progresso+"%";
+  document.getElementById("cargoPorcento").innerText = progresso+"%";
+
+  document.getElementById("cargo").innerText = cargos[cargo];
+  document.getElementById("turno").innerText = turno===0?"Manhã":"Tarde";
+
+  // DONO
+  if(cargo===3){
+    document.getElementById("barraCargo").style.background="gold";
+    document.getElementById("barraCargo").style.width="100%";
+    document.getElementById("cargo").innerText="👑DONO👑";
+  }
+
+  if(cargo>=2){
+    document.getElementById("btnFabrica").disabled=false;
+  }
+
+  checarFim();
 }
 
 /* LOG */
-function log(txt){
-    let r = document.getElementById("relatorio");
-    r.innerHTML += "<p>" + txt + "</p>";
-    r.scrollTop = r.scrollHeight;
-}
-
-/* POPUP DINÂMICO MELHORADO */
-function popup(txt, opcoes){
-    let html = "";
-
-    opcoes.forEach(op=>{
-        html += `<button onclick="${op.acao}">${op.nome}</button>`;
-    });
-
-    document.getElementById("popupText").innerHTML = txt;
-    document.getElementById("popupBtns").innerHTML = html;
-    document.getElementById("popup").style.display = "block";
-}
-
-function fechar(){
-    document.getElementById("popup").style.display = "none";
-}
-
-/* AÇÕES */
-function acao(tipo){
-
-    if(!jogoAtivo) return;
-
-    if(tipo==="trabalhar"){
-        dinheiro += 5;
-        eficiencia += 10;
-        saude -= 10;
-        satisfacao -= 10;
-
-        cargoXP += 25; // 🔥 aumento pra garantir progressão
-
-        log("🔧 Você trabalhou duro.");
-    }
-
-    if(tipo==="descansar"){
-        dinheiro -= 5;
-        eficiencia -= 10;
-        saude += 20;
-        satisfacao += 20;
-
-        log("😴 Você descansou.");
-    }
-
-    if(tipo==="arriscar"){
-        if(Math.random()>0.5){
-            dinheiro += 20;
-            log("🎲 Você ganhou dinheiro!");
-        }else{
-            dinheiro -= 15;
-            log("🎲 Você perdeu dinheiro!");
-        }
-    }
-
-    subirCargo(); // 🔥 corrigido
-    avancarTurno();
-}
-
-/* PROMOÇÃO CORRIGIDA */
-function subirCargo(){
-
-    if(cargoXP >= 100 && cargoNivel < 3){
-
-        cargoXP = 0;
-        cargoNivel++;
-
-        popup(
-        "📈 PROMOÇÃO!<br><br>Você virou: <b>"+cargos[cargoNivel]+"</b>",
-        [{nome:"Continuar",acao:"fechar()"}]
-        );
-
-        // DONO FINAL
-        if(cargoNivel === 3){
-            let barra = document.getElementById("barraCargo");
-            barra.style.background = "gold";
-            barra.style.width = "100%";
-            barra.innerText = "👑DONO👑";
-        }
-    }
+function log(msg){
+  let logDiv = document.getElementById("log");
+  logDiv.innerHTML += `<p>📅 Dia ${dia} (${turno===0?"Manhã":"Tarde"}): ${msg}</p>`;
+  logDiv.scrollTop = logDiv.scrollHeight;
 }
 
 /* TURNOS */
-function avancarTurno(){
+function passarTurno(){
+  turno++;
+  if(turno>1){
+    turno=0;
+    dia++;
+  }
+}
 
-    if(turno === "Manhã"){
-        turno = "Tarde";
-    }else{
-        turno = "Manhã";
-        dia++;
-    }
+/* AÇÕES */
+function trabalhar(){
+  if(!jogoAtivo || popupAtivo) return;
 
-    atualizar();
+  dinheiro += salarios[cargo];
+
+  eficiencia += 10;
+  saude -= 10;
+  satisfacao -= 10;
+
+  progresso += 12; // MAIS DIFÍCIL
+
+  log("🔧 Você trabalhou.");
+
+  promover();
+  evento();
+  passarTurno();
+  atualizarUI();
+}
+
+function descansar(){
+  if(!jogoAtivo || popupAtivo) return;
+
+  dinheiro -= 5;
+
+  eficiencia -= 10;
+  saude += 20;
+  satisfacao += 20;
+
+  log("😴 Você descansou.");
+
+  passarTurno();
+  atualizarUI();
+}
+
+function arriscar(){
+  if(!jogoAtivo || popupAtivo) return;
+
+  if(Math.random()>0.5){
+    dinheiro += 20;
+    log("🎲 Você ganhou dinheiro!");
+  } else {
+    dinheiro -= 10;
+    eficiencia -= 10;
+    log("🎲 Deu ruim...");
+  }
+
+  passarTurno();
+  atualizarUI();
+}
+
+/* EVENTOS */
+function evento(){
+  if(Math.random()<0.3){
+    popup(
+      "⚠️ Evento na fábrica",
+      "Um problema apareceu! O que fazer?",
+      [
+        {nome:"Resolver (-R$10 +10% Eficiência)",acao:"resolver()"},
+        {nome:"Ignorar (-10% Eficiência)",acao:"ignorar()"}
+      ]
+    );
+  }
+}
+
+function resolver(){
+  dinheiro -= 10;
+  eficiencia += 10;
+  fecharPopup();
+  atualizarUI();
+}
+
+function ignorar(){
+  eficiencia -= 10;
+  fecharPopup();
+  atualizarUI();
 }
 
 /* FÁBRICA */
 function abrirFabrica(){
-    popup("🏭 Melhorias da fábrica",[
-        {nome:"Máquinas (-20 +10%)",acao:"upgrade(20,10)"},
-        {nome:"Automação (-40 +20%)",acao:"upgrade(40,20)"},
-        {nome:"Expansão (-60 +30%)",acao:"upgrade(60,30)"}
-    ]);
+  if(popupAtivo) return;
+
+  popup(
+    "🏭 Melhorias da fábrica",
+    "Escolha um investimento:",
+    [
+      {nome:"Máquinas (-20 +10%)",acao:"upgrade(20,10)"},
+      {nome:"Automação (-40 +20%)",acao:"upgrade(40,20)"}
+    ]
+  );
 }
 
-function upgrade(custo, ganho){
+function upgrade(c,g){
+  if(dinheiro>=c){
+    dinheiro-=c;
+    fabrica+=g;
+    log("🏭 Fábrica evoluiu!");
+  } else {
+    log("❌ Dinheiro insuficiente.");
+  }
 
-    if(dinheiro >= custo){
-        dinheiro -= custo;
-        fabrica += ganho;
-        log("🏭 Fábrica evoluiu!");
-    }else{
-        log("❌ Dinheiro insuficiente.");
-    }
-
-    fechar();
-    atualizar();
+  fecharPopup();
+  atualizarUI(); // atualização imediata
 }
 
-/* FINAIS MELHORADOS */
-function verificarFim(){
-
-    if(!jogoAtivo) return;
-
-    if(eficiencia<=0 || saude<=0 || satisfacao<=0){
-        jogoAtivo = false;
-
-        popup(
-        "❌ FIM DE JOGO<br><br>Você foi demitido.",
-        [{nome:"Recomeçar",acao:"restart()"}]
-        );
-    }
-
-    if(dinheiro < -50){
-        jogoAtivo = false;
-
-        popup(
-        "💸 FALÊNCIA<br><br>Você perdeu tudo.",
-        [{nome:"Recomeçar",acao:"restart()"}]
-        );
-    }
-
-    if(fabrica >= 100){
-        jogoAtivo = false;
-
-        popup(
-        "🏆 VITÓRIA!<br><br>Sua fábrica virou um sucesso!",
-        [{nome:"Jogar novamente",acao:"restart()"}]
-        );
-    }
-}
-
-/* RESET */
-function restart(){
-    location.reload();
-}
-
-/* TUTORIAL DINÂMICO */
-window.onload = () => {
+/* PROMOÇÃO */
+function promover(){
+  if(progresso>=100 && cargo<3){
+    progresso=0;
+    cargo++;
 
     popup(
-    "📘 COMO JOGAR<br><br>"+
-    "🔧 Trabalhe → ganha dinheiro<br>"+
-    "😴 Descanse → recupera status<br>"+
-    "🎲 Arrisque → pode ganhar ou perder<br><br>"+
-    "⚠️ Não deixe as barras zerarem<br>"+
-    "👑 Chegue ao topo!",
-    [{nome:"Começar",acao:"fechar()"}]
+      "📈 PROMOÇÃO!",
+      "Agora você é <b>"+cargos[cargo]+"</b>",
+      [{nome:"Continuar",acao:"fecharPopup()"}]
     );
-
-    atualizar();
+  }
 }
+
+/* DIA */
+function pularDia(){
+  if(popupAtivo) return;
+
+  if(turno===0){
+    dia++;
+    turno=0;
+    log("⏩ Dia pulado.");
+    atualizarUI();
+  } else {
+    popup("Erro","Só pode pular no início do dia.");
+  }
+}
+
+/* FINAIS */
+function checarFim(){
+
+  if(!jogoAtivo) return;
+
+  if(eficiencia<=0 || saude<=0 || satisfacao<=0){
+    jogoAtivo=false;
+    popup(
+      "❌ Demissão",
+      "Uma das barras zerou.",
+      [{nome:"Recomeçar",acao:"restart()"}]
+    );
+  }
+
+  if(dinheiro<-50){
+    jogoAtivo=false;
+    popup(
+      "💸 Falência",
+      "Dívida muito alta.",
+      [{nome:"Recomeçar",acao:"restart()"}]
+    );
+  }
+
+  if(fabrica>=100){
+    jogoAtivo=false;
+    popup(
+      "🏆 Sucesso",
+      "Sua fábrica chegou a 100%!",
+      [{nome:"Recomeçar",acao:"restart()"}]
+    );
+  }
+}
+
+function restart(){
+  location.reload();
+}
+
+/* INICIO */
+window.onload = ()=>{
+  popup(
+    "📘 Tutorial",
+    "Trabalhe, evolua e vire DONO 👑<br><br>Equilibre suas barras!",
+    [{nome:"Começar",acao:"fecharPopup()"}]
+  );
+
+  atualizarUI();
+  log("Você começou como Operário.");
+      }
