@@ -1,231 +1,216 @@
-let dia = 1;
-let turno = 0; // 0 manhã | 1 tarde
-
 let dinheiro = 0;
-
-let eficiencia = 15;
-let saude = 80;
-let satisfacao = 60;
+let eficiencia = 15; // ✔ começa em 15%
+let saude = 50;
+let satisfacao = 50;
 let fabrica = 0;
 
-let cargo = 0;
-let progresso = 0;
+let cargoXP = 0;
+let cargoNivel = 0;
+let cargos = ["Operário","Supervisor","Gerente","Dono"];
 
-const cargos = ["Operário","Supervisor","Gerente","Dono"];
-const salarios = [3,6,18,50];
+let dia = 1;
+let turno = "Manhã";
 
-function limitar(v){
-  return Math.max(0, Math.min(100, v));
+let jogoAtivo = true;
+
+/* LIMITADOR */
+function limite(v){
+    return Math.max(0, Math.min(100, v));
 }
 
-/* ================= POPUP ================= */
+/* ATUALIZA UI */
+function atualizar(){
 
-function popup(titulo, texto){
-  document.getElementById("popupTitulo").innerText = titulo;
-  document.getElementById("popupTexto").innerText = texto;
-  document.getElementById("popup").classList.remove("hidden");
+    eficiencia = limite(eficiencia);
+    saude = limite(saude);
+    satisfacao = limite(satisfacao);
+    cargoXP = limite(cargoXP);
+
+    // Barra cargo %
+    let barra = document.getElementById("barraCargo");
+    barra.style.width = cargoXP + "%";
+    barra.innerText = cargoXP + "%";
+
+    document.getElementById("dinheiro").innerText = "R$ " + dinheiro;
+
+    document.getElementById("cargoTxt").innerText =
+    "Cargo: " + cargos[cargoNivel] + " • Dia " + dia + " (" + turno + ")";
+
+    verificarFim();
 }
 
-function fecharPopup(){
-  document.getElementById("popup").classList.add("hidden");
+/* LOG */
+function log(txt){
+    let r = document.getElementById("relatorio");
+    r.innerHTML += "<p>" + txt + "</p>";
+    r.scrollTop = r.scrollHeight;
 }
 
-/* ================= UI ================= */
+/* POPUP DINÂMICO MELHORADO */
+function popup(txt, opcoes){
+    let html = "";
 
-function atualizarUI(){
+    opcoes.forEach(op=>{
+        html += `<button onclick="${op.acao}">${op.nome}</button>`;
+    });
 
-  document.getElementById("money").innerText = dinheiro;
-
-  eficiencia = limitar(eficiencia);
-  saude = limitar(saude);
-  satisfacao = limitar(satisfacao);
-  fabrica = limitar(fabrica);
-
-  document.getElementById("eficienciaBar").style.width = eficiencia+"%";
-  document.getElementById("saudeBar").style.width = saude+"%";
-  document.getElementById("satisfacaoBar").style.width = satisfacao+"%";
-  document.getElementById("fabricaBar").style.width = fabrica+"%";
-
-  document.getElementById("eficienciaTxt").innerText = eficiencia+"%";
-  document.getElementById("saudeTxt").innerText = saude+"%";
-  document.getElementById("satisfacaoTxt").innerText = satisfacao+"%";
-  document.getElementById("fabricaTxt").innerText = fabrica+"%";
-
-  document.getElementById("barraCargo").style.width = progresso+"%";
-  document.getElementById("cargoPorcento").innerText = progresso+"%";
-
-  let turnoTxt = turno === 0 ? "Manhã" : "Tarde";
-
-  document.getElementById("cargo").innerText = cargos[cargo];
-  document.getElementById("turno").innerText = turnoTxt;
-
-  /* DONO */
-  if(cargo === 3){
-    document.getElementById("barraCargo").style.background = "gold";
-    document.getElementById("cargo").innerText = "👑DONO👑";
-  }
-
-  /* LIBERAR FÁBRICA */
-  if(cargo >= 2){
-    document.getElementById("btnFabrica").disabled = false;
-  }
-
-  checarFim();
+    document.getElementById("popupText").innerHTML = txt;
+    document.getElementById("popupBtns").innerHTML = html;
+    document.getElementById("popup").style.display = "block";
 }
 
-/* ================= LOG ================= */
-
-function log(msg){
-  let logDiv = document.getElementById("log");
-  logDiv.innerHTML += `<p>📅 Dia ${dia} (${turno === 0 ? "Manhã":"Tarde"}): ${msg}</p>`;
-  logDiv.scrollTop = logDiv.scrollHeight;
+function fechar(){
+    document.getElementById("popup").style.display = "none";
 }
 
-/* ================= TURNOS ================= */
+/* AÇÕES */
+function acao(tipo){
 
-function passarTurno(){
+    if(!jogoAtivo) return;
 
-  turno++;
+    if(tipo==="trabalhar"){
+        dinheiro += 5;
+        eficiencia += 10;
+        saude -= 10;
+        satisfacao -= 10;
 
-  if(turno > 1){
-    turno = 0;
-    dia++;
-  }
+        cargoXP += 25; // 🔥 aumento pra garantir progressão
 
-  popup("Tempo",
-    `Dia ${dia} • Turno ${turno === 0 ? "Manhã":"Tarde"}`
-  );
+        log("🔧 Você trabalhou duro.");
+    }
+
+    if(tipo==="descansar"){
+        dinheiro -= 5;
+        eficiencia -= 10;
+        saude += 20;
+        satisfacao += 20;
+
+        log("😴 Você descansou.");
+    }
+
+    if(tipo==="arriscar"){
+        if(Math.random()>0.5){
+            dinheiro += 20;
+            log("🎲 Você ganhou dinheiro!");
+        }else{
+            dinheiro -= 15;
+            log("🎲 Você perdeu dinheiro!");
+        }
+    }
+
+    subirCargo(); // 🔥 corrigido
+    avancarTurno();
 }
 
-/* ================= AÇÕES ================= */
+/* PROMOÇÃO CORRIGIDA */
+function subirCargo(){
 
-function trabalhar(){
-  dinheiro += salarios[cargo];
+    if(cargoXP >= 100 && cargoNivel < 3){
 
-  eficiencia += 10;
-  saude -= 10;
-  satisfacao -= 10;
+        cargoXP = 0;
+        cargoNivel++;
 
-  progresso += 10;
+        popup(
+        "📈 PROMOÇÃO!<br><br>Você virou: <b>"+cargos[cargoNivel]+"</b>",
+        [{nome:"Continuar",acao:"fechar()"}]
+        );
 
-  log("Você trabalhou.");
-
-  promover();
-  passarTurno();
-  atualizarUI();
+        // DONO FINAL
+        if(cargoNivel === 3){
+            let barra = document.getElementById("barraCargo");
+            barra.style.background = "gold";
+            barra.style.width = "100%";
+            barra.innerText = "👑DONO👑";
+        }
+    }
 }
 
-function descansar(){
-  dinheiro -= 5;
+/* TURNOS */
+function avancarTurno(){
 
-  eficiencia -= 10;
-  saude += 20;
-  satisfacao += 20;
+    if(turno === "Manhã"){
+        turno = "Tarde";
+    }else{
+        turno = "Manhã";
+        dia++;
+    }
 
-  log("Você descansou.");
-
-  passarTurno();
-  atualizarUI();
+    atualizar();
 }
 
-function arriscar(){
-  let sorte = Math.random();
-
-  if(sorte > 0.5){
-    dinheiro += 20;
-    log("Você ganhou dinheiro!");
-  } else {
-    dinheiro -= 10;
-    eficiencia -= 10;
-    log("Deu ruim...");
-  }
-
-  passarTurno();
-  atualizarUI();
-}
-
+/* FÁBRICA */
 function abrirFabrica(){
-
-  if(cargo < 2){
-    popup("Bloqueado","Fábrica só libera no Gerente.");
-    return;
-  }
-
-  if(dinheiro >= 20){
-    dinheiro -= 20;
-    fabrica += 10;
-    log("Você investiu na fábrica.");
-  } else {
-    popup("Sem dinheiro","Você não tem dinheiro suficiente.");
-  }
-
-  atualizarUI();
+    popup("🏭 Melhorias da fábrica",[
+        {nome:"Máquinas (-20 +10%)",acao:"upgrade(20,10)"},
+        {nome:"Automação (-40 +20%)",acao:"upgrade(40,20)"},
+        {nome:"Expansão (-60 +30%)",acao:"upgrade(60,30)"}
+    ]);
 }
 
-/* ================= PROGRESSÃO ================= */
+function upgrade(custo, ganho){
 
-function promover(){
-  if(progresso >= 100 && cargo < 3){
-    cargo++;
-    progresso = 0;
+    if(dinheiro >= custo){
+        dinheiro -= custo;
+        fabrica += ganho;
+        log("🏭 Fábrica evoluiu!");
+    }else{
+        log("❌ Dinheiro insuficiente.");
+    }
 
-    popup("Promoção!",
-      `Agora você é ${cargos[cargo]}`
-    );
-  }
+    fechar();
+    atualizar();
 }
 
-/* ================= DIA ================= */
+/* FINAIS MELHORADOS */
+function verificarFim(){
 
-function pularDia(){
+    if(!jogoAtivo) return;
 
-  if(turno === 0){
+    if(eficiencia<=0 || saude<=0 || satisfacao<=0){
+        jogoAtivo = false;
 
-    let diaAntigo = dia;
+        popup(
+        "❌ FIM DE JOGO<br><br>Você foi demitido.",
+        [{nome:"Recomeçar",acao:"restart()"}]
+        );
+    }
 
-    dia++;
-    turno = 0;
+    if(dinheiro < -50){
+        jogoAtivo = false;
 
-    popup("Avanço de tempo",
-      `Dia ${diaAntigo} → Dia ${dia}\nTurno Manhã`
-    );
+        popup(
+        "💸 FALÊNCIA<br><br>Você perdeu tudo.",
+        [{nome:"Recomeçar",acao:"restart()"}]
+        );
+    }
 
-    log("Você pulou o dia.");
+    if(fabrica >= 100){
+        jogoAtivo = false;
 
-  } else {
-    popup("Erro","Só pode pular no início do dia.");
-  }
-
-  atualizarUI();
+        popup(
+        "🏆 VITÓRIA!<br><br>Sua fábrica virou um sucesso!",
+        [{nome:"Jogar novamente",acao:"restart()"}]
+        );
+    }
 }
 
-/* ================= FINAIS ================= */
-
-function checarFim(){
-
-  if(eficiencia <= 0 || saude <= 0 || satisfacao <= 0){
-    popup("🔴 Demissão",
-      "Uma de suas barras zerou. Você foi demitido!"
-    );
-    setTimeout(()=>location.reload(),2000);
-  }
-
-  if(dinheiro < -50){
-    popup("💸 Falência",
-      "Sua dívida passou de R$50 negativos!"
-    );
-    setTimeout(()=>location.reload(),2000);
-  }
-
-  if(fabrica >= 100){
-    popup("🟢 Sucesso",
-      "Você construiu uma fábrica de sucesso!"
-    );
-    setTimeout(()=>location.reload(),2000);
-  }
+/* RESET */
+function restart(){
+    location.reload();
 }
 
-/* ================= INICIO ================= */
+/* TUTORIAL DINÂMICO */
+window.onload = () => {
 
-atualizarUI();
-log("Você começou como Operário.");
+    popup(
+    "📘 COMO JOGAR<br><br>"+
+    "🔧 Trabalhe → ganha dinheiro<br>"+
+    "😴 Descanse → recupera status<br>"+
+    "🎲 Arrisque → pode ganhar ou perder<br><br>"+
+    "⚠️ Não deixe as barras zerarem<br>"+
+    "👑 Chegue ao topo!",
+    [{nome:"Começar",acao:"fechar()"}]
+    );
+
+    atualizar();
+}
