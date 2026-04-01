@@ -13,6 +13,13 @@ body{
     color:white;
 }
 
+/* RESPONSIVO */
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:15px;
+}
+
 /* TOPO */
 .topo{
     background:#2f6de0;
@@ -21,21 +28,15 @@ body{
     justify-content:space-between;
 }
 
-/* CONTAINER */
-.container{
-    padding:15px;
-    max-width:500px;
-    margin:auto;
-}
-
 /* RELATÓRIO */
 .relatorio{
     background:black;
     padding:10px;
-    height:160px;
+    height:180px;
     overflow-y:auto;
-    border-radius:10px;
+    border-radius:12px;
     border:2px solid black;
+    margin-bottom:15px;
 }
 
 /* BARRAS */
@@ -50,6 +51,9 @@ body{
     height:14px;
     width:0%;
     transition:0.4s;
+    text-align:right;
+    padding-right:5px;
+    font-size:12px;
 }
 
 /* CORES */
@@ -64,14 +68,14 @@ body{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
-    margin-top:15px;
+    margin-bottom:15px;
 }
 
 button{
-    padding:15px;
+    padding:14px;
     border:none;
     border-radius:12px;
-    font-size:16px;
+    font-size:15px;
     color:white;
     cursor:pointer;
     transition:0.2s;
@@ -97,12 +101,14 @@ button:active{
     padding:20px;
     border-radius:15px;
     display:none;
+    width:85%;
+    max-width:350px;
     text-align:center;
-    width:80%;
 }
 
 .popup button{
     margin-top:10px;
+    width:100%;
 }
 </style>
 </head>
@@ -116,7 +122,7 @@ button:active{
 
 <div class="container">
 
-<h3 id="cargoTxt">Cargo: Operário • Manhã</h3>
+<h3 id="cargoTxt"></h3>
 
 <div class="barra">
     <div id="barraCargo" class="fill cargo"></div>
@@ -128,7 +134,7 @@ button:active{
     <button class="trabalhar" onclick="acao('trabalhar')">🔧 Trabalhar</button>
     <button class="descansar" onclick="acao('descansar')">😴 Descansar</button>
     <button class="arriscar" onclick="acao('arriscar')">🎲 Arriscar</button>
-    <button id="btnFabrica" class="fabricaBtn" onclick="gerenciar()" disabled>🏭 Gerenciar</button>
+    <button id="btnFabrica" class="fabricaBtn" onclick="abrirFabrica()" disabled>🏭 Gerenciar</button>
     <button class="proximo" onclick="pularDia()">➕ Próximo Dia</button>
 </div>
 
@@ -146,9 +152,10 @@ button:active{
 
 </div>
 
+<!-- POPUP -->
 <div class="popup" id="popup">
     <div id="popupText"></div>
-    <button onclick="fecharPopup()">OK</button>
+    <div id="popupBtns"></div>
 </div>
 
 <script>
@@ -168,9 +175,7 @@ let dia = 1;
 let turno = "Manhã";
 
 /* LIMITADOR */
-function limite(v){
-    return Math.max(0, Math.min(100, v));
-}
+function limite(v){ return Math.max(0, Math.min(100, v)); }
 
 /* UI */
 function atualizar(){
@@ -181,16 +186,23 @@ function atualizar(){
     fabrica = limite(fabrica);
 
     document.getElementById("eficiencia").style.width = eficiencia+"%";
+    document.getElementById("eficiencia").innerText = eficiencia+"%";
+
     document.getElementById("saude").style.width = saude+"%";
+    document.getElementById("saude").innerText = saude+"%";
+
     document.getElementById("satisfacao").style.width = satisfacao+"%";
+    document.getElementById("satisfacao").innerText = satisfacao+"%";
+
     document.getElementById("fabrica").style.width = fabrica+"%";
+    document.getElementById("fabrica").innerText = fabrica+"%";
 
     document.getElementById("barraCargo").style.width = cargoXP+"%";
 
     document.getElementById("dinheiro").innerText = "R$ "+dinheiro;
-    document.getElementById("cargoTxt").innerText = "Cargo: "+cargos[cargoNivel]+" • "+turno;
+    document.getElementById("cargoTxt").innerText =
+    "Cargo: "+cargos[cargoNivel]+" • Dia "+dia+" ("+turno+")";
 
-    /* LIBERAR FÁBRICA */
     if(cargoNivel >= 2){
         document.getElementById("btnFabrica").disabled = false;
     }
@@ -198,16 +210,23 @@ function atualizar(){
     verificarFim();
 }
 
-/* LOG */
+/* RELATÓRIO */
 function log(txt){
     let r = document.getElementById("relatorio");
     r.innerHTML += "<p>"+txt+"</p>";
     r.scrollTop = r.scrollHeight;
 }
 
-/* POPUP */
-function popup(txt){
-    document.getElementById("popupText").innerText = txt;
+/* POPUP DINÂMICO */
+function popup(txt, opcoes=[]){
+    document.getElementById("popupText").innerHTML = txt;
+
+    let btns = "";
+    opcoes.forEach(op=>{
+        btns += `<button onclick="${op.acao}">${op.nome}</button>`;
+    });
+
+    document.getElementById("popupBtns").innerHTML = btns || `<button onclick="fecharPopup()">OK</button>`;
     document.getElementById("popup").style.display="block";
 }
 
@@ -224,7 +243,7 @@ function acao(tipo){
         saude -= 10;
         satisfacao -= 10;
         cargoXP += 10;
-        log("Você trabalhou.");
+        log("🔧 Você trabalhou.");
     }
 
     if(tipo==="descansar"){
@@ -232,71 +251,90 @@ function acao(tipo){
         eficiencia -= 10;
         saude += 20;
         satisfacao += 20;
-        log("Você descansou.");
+        log("😴 Você descansou.");
     }
 
     if(tipo==="arriscar"){
         if(Math.random()>0.5){
-            dinheiro += 15;
-            log("Você ganhou!");
+            dinheiro += 20;
+            log("🎲 Você ganhou dinheiro!");
         }else{
             dinheiro -= 15;
-            log("Você perdeu!");
+            log("🎲 Você perdeu dinheiro!");
         }
     }
 
-    subirCargo();
+    eventoAleatorio();
     avancarTurno();
 }
 
-/* GERENCIAR FÁBRICA */
-function gerenciar(){
-    if(dinheiro >= 20){
-        dinheiro -= 20;
-        fabrica += 10;
-        popup("🏭 Você investiu na fábrica!");
-    }else{
-        popup("Sem dinheiro!");
+/* EVENTOS */
+function eventoAleatorio(){
+    if(Math.random()<0.3){
+        popup("⚠️ Problema na fábrica!",[
+            {nome:"Resolver (-R$10 +Eficiência)",acao:"resolver()"},
+            {nome:"Ignorar (-Eficiência)",acao:"ignorar()"}
+        ]);
     }
-    atualizar();
 }
 
-/* PROGRESSÃO */
-function subirCargo(){
-    if(cargoXP >= 100 && cargoNivel < 3){
-        cargoXP = 0;
-        cargoNivel++;
+function resolver(){
+    dinheiro -= 10;
+    eficiencia += 10;
+    fecharPopup();
+}
 
-        if(cargoNivel === 3){
-            document.getElementById("barraCargo").style.background="gold";
-            popup("👑 Você virou DONO!");
-        }else{
-            popup("📈 Promoção: "+cargos[cargoNivel]);
-        }
+function ignorar(){
+    eficiencia -= 10;
+    fecharPopup();
+}
+
+/* FÁBRICA */
+function abrirFabrica(){
+    popup("🏭 Melhorias:",[
+        {nome:"Máquinas (-R$20 +10%)",acao:"upgrade(20,10)"},
+        {nome:"Funcionários (-R$30 +15%)",acao:"upgrade(30,15)"}
+    ]);
+}
+
+function upgrade(custo, ganho){
+    if(dinheiro>=custo){
+        dinheiro -= custo;
+        fabrica += ganho;
     }
+    fecharPopup();
 }
 
 /* TURNO */
 function avancarTurno(){
+    log("📅 Dia "+dia+" / "+turno);
 
-    popup("Dia "+dia+" / "+turno);
-
-    if(turno==="Manhã"){
-        turno="Tarde";
-    }else{
-        turno="Manhã";
-        dia++;
-    }
+    if(turno==="Manhã") turno="Tarde";
+    else{ turno="Manhã"; dia++; }
 
     atualizar();
 }
 
 /* PULAR DIA */
 function pularDia(){
-    popup("Dia "+dia+" → Dia "+(dia+1));
+    log("⏩ Dia "+dia+" → "+(dia+1));
     dia++;
     turno="Manhã";
     atualizar();
+}
+
+/* PROGRESSÃO */
+function subirCargo(){
+    if(cargoXP>=100 && cargoNivel<3){
+        cargoXP=0;
+        cargoNivel++;
+
+        if(cargoNivel===3){
+            cargoXP=100;
+            document.getElementById("barraCargo").style.background="gold";
+            popup("👑 Você virou DONO!");
+        }
+    }
 }
 
 /* FIM */
@@ -306,12 +344,16 @@ function verificarFim(){
         popup("❌ Você foi demitido!");
     }
 
-    if(dinheiro < -50){
+    if(dinheiro<-50){
         popup("💸 Falência!");
     }
 }
 
-atualizar();
+/* TUTORIAL */
+window.onload = () =>{
+    popup("📖 Como jogar:<br>Gerencie sua fábrica, mantenha suas barras equilibradas e evolua de cargo!");
+    atualizar();
+}
 
 </script>
 
