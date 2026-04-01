@@ -3,7 +3,7 @@ let turno = 0;
 
 let dinheiro = 0;
 
-let eficiencia = 15; // corrigido
+let eficiencia = 15;
 let saude = 80;
 let satisfacao = 60;
 let fabrica = 0;
@@ -73,7 +73,6 @@ function atualizarUI(){
   document.getElementById("cargo").innerText = cargos[cargo];
   document.getElementById("turno").innerText = turno===0?"Manhã":"Tarde";
 
-  // DONO
   if(cargo===3){
     document.getElementById("barraCargo").style.background="gold";
     document.getElementById("barraCargo").style.width="100%";
@@ -113,7 +112,7 @@ function trabalhar(){
   saude -= 10;
   satisfacao -= 10;
 
-  progresso += 12; // MAIS DIFÍCIL
+  progresso += 12;
 
   log("🔧 Você trabalhou.");
 
@@ -154,17 +153,25 @@ function arriscar(){
   atualizarUI();
 }
 
-/* EVENTOS */
+/* EVENTO DINÂMICO */
 function evento(){
   if(Math.random()<0.3){
+
     popup(
-      "⚠️ Evento na fábrica",
-      "Um problema apareceu! O que fazer?",
+      "⚠️ PROBLEMA NA FÁBRICA",
+      `
+      <b>Uma falha crítica apareceu na produção!</b><br><br>
+      Se você não agir agora, a eficiência vai cair.<br><br>
+
+      <span style="color:#00ff88"><b>✔ Resolver:</b></span> -R$10 | +10% Eficiência<br>
+      <span style="color:#ff4444"><b>✖ Ignorar:</b></span> -10% Eficiência
+      `,
       [
-        {nome:"Resolver (-R$10 +10% Eficiência)",acao:"resolver()"},
-        {nome:"Ignorar (-10% Eficiência)",acao:"ignorar()"}
+        {nome:"🛠️ Resolver problema",acao:"resolver()"},
+        {nome:"❌ Ignorar",acao:"ignorar()"}
       ]
     );
+
   }
 }
 
@@ -205,7 +212,7 @@ function upgrade(c,g){
   }
 
   fecharPopup();
-  atualizarUI(); // atualização imediata
+  atualizarUI();
 }
 
 /* PROMOÇÃO */
@@ -215,14 +222,14 @@ function promover(){
     cargo++;
 
     popup(
-      "📈 PROMOÇÃO!",
-      "Agora você é <b>"+cargos[cargo]+"</b>",
+      "📈 PROMOÇÃO",
+      `<b>Agora você é ${cargos[cargo]}</b>`,
       [{nome:"Continuar",acao:"fecharPopup()"}]
     );
   }
 }
 
-/* DIA */
+/* PULAR DIA */
 function pularDia(){
   if(popupAtivo) return;
 
@@ -236,35 +243,50 @@ function pularDia(){
   }
 }
 
-/* FINAIS */
+/* FINAIS DINÂMICOS */
 function checarFim(){
 
   if(!jogoAtivo) return;
 
   if(eficiencia<=0 || saude<=0 || satisfacao<=0){
     jogoAtivo=false;
+
     popup(
-      "❌ Demissão",
-      "Uma das barras zerou.",
-      [{nome:"Recomeçar",acao:"restart()"}]
+      "❌ DEMITIDO",
+      `
+      <b>Você perdeu o controle da produção...</b><br><br>
+      Uma das barras chegou a 0%.<br><br>
+      <span style="color:#ff4444"><b>Fim de jogo.</b></span>
+      `,
+      [{nome:"🔄 Recomeçar",acao:"restart()"}]
     );
   }
 
   if(dinheiro<-50){
     jogoAtivo=false;
+
     popup(
-      "💸 Falência",
-      "Dívida muito alta.",
-      [{nome:"Recomeçar",acao:"restart()"}]
+      "💸 FALÊNCIA",
+      `
+      <b>Suas dívidas saíram do controle!</b><br><br>
+      Você ultrapassou -R$50.<br><br>
+      <span style="color:#ff4444"><b>Você quebrou.</b></span>
+      `,
+      [{nome:"🔄 Tentar novamente",acao:"restart()"}]
     );
   }
 
   if(fabrica>=100){
     jogoAtivo=false;
+
     popup(
-      "🏆 Sucesso",
-      "Sua fábrica chegou a 100%!",
-      [{nome:"Recomeçar",acao:"restart()"}]
+      "🏆 SUCESSO TOTAL",
+      `
+      <b>Você construiu um império industrial!</b><br><br>
+      Sua fábrica chegou a 100%.<br><br>
+      <span style="color:#00ff88"><b>Parabéns, DONO 👑</b></span>
+      `,
+      [{nome:"🚀 Jogar novamente",acao:"restart()"}]
     );
   }
 }
@@ -277,10 +299,10 @@ function restart(){
 window.onload = ()=>{
   popup(
     "📘 Tutorial",
-    "Trabalhe, evolua e vire DONO 👑<br><br>Equilibre suas barras!",
+    "Equilibre suas barras, evolua e vire DONO 👑",
     [{nome:"Começar",acao:"fecharPopup()"}]
   );
 
   atualizarUI();
   log("Você começou como Operário.");
-      }
+    }
